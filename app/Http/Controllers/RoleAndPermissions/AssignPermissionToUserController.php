@@ -9,11 +9,19 @@ use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Service\PermissionService;
 use Spatie\Permission\Models\Permission;
 
 class AssignPermissionToUserController extends Controller
 {
     use CustomMessage, LogError;
+
+    protected $permissionService;
+
+    public function __construct(PermissionService $permissionService)
+    {
+        $this->permissionService = $permissionService;
+    }
 
     public function showAssignPermissionToUserForm()
     {
@@ -33,49 +41,25 @@ class AssignPermissionToUserController extends Controller
     public function assignPermissionToUser(AssignPermissionToUserFormRequest $request)
     {
         try {
-            $user = User::findOrFail($request->validated()['user_id']);
-            $permission = $request->validated()['permissions'];
-
-            if (empty($permission)) {
-                $this->flashMessage('error', 'Please select at least one permission.');
-                return redirect()->back();
-            }
-
-            $user->syncPermissions($permission);
-
-            $this->flashMessage('success', 'Permission assigned successfully');
+            $this->permissionService->assignPermissionToUser($request->validated());
             return redirect()->route('permissions.index');
         } catch (Exception $e) {
-            // Log the error
-            $this->logError('Error creating permission: ' . $e->getMessage(), [
-                'exception' => $e,
+            $this->logError('Error loading assign permission form', [
+                'error' => $e->getMessage()
             ]);
-            // Handle the exception
-            return $this->flashMessage('error', 'An error occurred while assigning the permission. Please try again later.');
+            return redirect()->back()->with('error', 'Failed to load form');
         }
     }
     public function revokePermissionFromUser(AssignPermissionToUserFormRequest $request)
     {
         try {
-            $user = User::findOrFail($request->validated()['user_id']);
-            $permission = $request->validated()['permissions'];
-
-            if (empty($permission)) {
-                $this->flashMessage('error', 'Please select at least one permission.');
-                return redirect()->back();
-            }
-
-            $user->revokePermissionTo($permission);
-
-            $this->flashMessage('success', 'Permission revoked successfully');
+            $this->permissionService->revokePermissionToUser($request->validated());
             return redirect()->route('permissions.index');
         } catch (Exception $e) {
-            // Log the error
-            $this->logError('Error creating permission: ' . $e->getMessage(), [
-                'exception' => $e,
+            $this->logError('Error loading revoke permission form', [
+                'error' => $e->getMessage()
             ]);
-            // Handle the exception
-            return $this->flashMessage('error', 'An error occurred while assigning the permission. Please try again later.');
+            return redirect()->back()->with('error', 'Failed to load form');
         }
     }
 }
