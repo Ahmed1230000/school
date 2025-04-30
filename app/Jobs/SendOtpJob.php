@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Mail\SendOtpMail;
 use App\Models\User;
+use App\Service\OtpService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Foundation\Queue\Queueable;
@@ -16,28 +17,34 @@ class SendOtpJob  implements ShouldQueue
 {
     use Queueable, Dispatchable, InteractsWithQueue, SerializesModels;
 
-    protected $user;
+    protected $user_id;
 
     /**
      * Create a new job instance.
      */
-    public function __construct(User $user)
+    public function __construct($user_id)
     {
-        $this->user = $user;
+        $this->user_id = $user_id;
     }
 
     /**
      * Execute the job.
      */
-    public function handle(): void
+    public function handle(OtpService $otpService): void
     {
-        $otp  = $this->user->otp()->create([
-            'user_id' => $this->user->id,
-            'otp_code' => random_int(100000, 999999),
-            'expires_at' => now()->addMinutes(5),
-            'is_used' => false,
-        ]);
-
-        Mail::to($this->user->email)->send(new SendOtpMail($otp->otp_code, $this->user));
+        $user = User::where('id', $this->user_id)->first();
+        if (!$user) {
+            Log::error('User not found', ['user_id' => $this->user_id]);
+            return;
+        }
+        try {
+            $otpService->sendOtp($user);
+            Log::info('OTP sent successfully', ['user_id' => $this->user_id]);
+        } catch (\Throwable $e) {
+            Log::error('Failed to send OTP', [
+                'user_id' => $this->user_id,
+                'error' => $e->getMessage()
+            ]);
+        }
     }
 }

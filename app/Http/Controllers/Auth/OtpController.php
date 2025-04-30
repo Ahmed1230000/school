@@ -9,10 +9,22 @@ use App\Http\Requests\VerifyOptFormRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\Otp;
+use App\Service\OtpVerificationService;
 
 class OtpController extends Controller
 {
     use CustomMessage, LogError;
+
+    protected $otpVerificationService;
+    /**
+     * OtpController constructor.
+     *
+     * @param OtpVerificationService $otpVerificationService
+     */
+    public function __construct(OtpVerificationService $otpVerificationService)
+    {
+        $this->otpVerificationService = $otpVerificationService;
+    }
     public function showOtpForm($user_id)
     {
         $user = User::findOrFail($user_id);
@@ -21,34 +33,15 @@ class OtpController extends Controller
 
     public function verifyOtp(VerifyOptFormRequest $request)
     {
-        try {
-            $user = User::find($request->validated()['user_id']);
+        $user = User::where('id', $request->user_id)->first();
 
-            if (!$user) {
-                $this->flashMessage('error', 'User not found');
-                return redirect()->back();
-            }
+        $otpCode = $request->otp_code;
 
-            $otp = $user->otp()->where('is_used', false)
-                ->where('otp_code', $request->validated()['otp_code'])
-                ->where('expires_at', '>', now())
-                ->latest()
-                ->first();
-
-            if ($otp) {
-                $otp->is_used = true;
-                $otp->save();
-
-                $user->otp_verified_at = now();
-                $user->save();
-                $this->flashMessage('success', 'OTP verified successfully');
-                return redirect()->back();
-            }
-            $this->flashMessage('error', 'Invalid OTP');
-            return redirect()->route('home')->with('success', 'OTP verified successfully');
-        } catch (\Exception $e) {
-            $this->logError('Failed to verify OTP', ['error' => $e->getMessage()]);
-            $this->flashMessage('error', 'Failed to verify OTP: ' . $e->getMessage());
+        if ($this->otpVerificationService->verifyOtp($user, $otpCode)) {
+            $this->flashMessage('success', 'OTP verified successfully');
+            return redirect()->route('login');
+        } else {
+            $this->flashMessage('error', 'Invalid or expired OTP');
             return redirect()->back();
         }
     }
