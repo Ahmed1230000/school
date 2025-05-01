@@ -17,12 +17,8 @@ class LogOutController extends Controller
     {
         $this->authService = $authService;
     }
-    public function showLogOutForm()
-    {
-        return view('auth.logOut');
-    }
     public function logOut(Request $request)
     {
-        $this->authService->logOut();
+        return $this->authService->logOut($request);
     }
 }

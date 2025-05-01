@@ -53,18 +53,27 @@
                     maxlength="6" inputmode="numeric">
             </div>
 
-            <div class="flex justify-between text-sm">
-                <p class="text-gray-600">Didn't get the OTP?</p>
-                <a href="{{ route('otp.resend', ['user_id' => $user->id]) }}"
-                    class="resend-btn text-indigo-600 hover:text-indigo-700 font-semibold">
-                    Resend OTP
-                </a>
-            </div>
-
-            <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300 transform hover:scale-105">
+            <button type="submit"
+                class="mt-2 w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300 transform hover:scale-105">
                 Verify OTP
             </button>
         </form>
+
+        <!-- 🟢 هذا هو الفورم الصحيح للـ Resend -->
+        <div class="flex justify-between text-sm items-center mt-4">
+            <p class="text-gray-600">Didn't get the OTP?</p>
+
+            <form method="POST" action="{{ route('otp.resend', ['user_id' => $user->id]) }}">
+                @csrf
+                <button
+                    type="submit"
+                    id="resendBtn"
+                    class="resend-btn text-indigo-600 hover:text-indigo-700 font-semibold ml-2">
+                    Resend OTP
+                </button>
+            </form>
+        </div>
+
 
         <p class="text-center text-sm text-gray-600 mt-6">
             Back to
@@ -73,27 +82,51 @@
     </div>
 
     <script>
-        let resendBtn = document.querySelector('.resend-btn');
-        let timer = 60;
+        const resendBtn = document.getElementById('resendBtn');
+        const RESEND_DELAY = 60;
+        const STORAGE_KEY = 'otp_resend_timestamp';
 
-        function updateResendButton() {
-            if (timer > 0) {
-                resendBtn.textContent = `Resend OTP in ${timer}s`;
-                resendBtn.classList.add('text-gray-400', 'cursor-not-allowed');
-                resendBtn.classList.remove('text-indigo-600', 'hover:text-indigo-700');
-                resendBtn.onclick = (e) => e.preventDefault();
-                timer--;
-                setTimeout(updateResendButton, 1000);
-            } else {
-                resendBtn.textContent = 'Resend OTP';
-                resendBtn.classList.remove('text-gray-400', 'cursor-not-allowed');
-                resendBtn.classList.add('text-indigo-600', 'hover:text-indigo-700');
-                resendBtn.onclick = null;
-            }
+        function getRemainingTime() {
+            const lastSent = localStorage.getItem(STORAGE_KEY);
+            if (!lastSent) return 0;
+            const elapsed = Math.floor((Date.now() - parseInt(lastSent)) / 1000);
+            return Math.max(0, RESEND_DELAY - elapsed);
         }
 
-        updateResendButton();
+        function startTimer(duration) {
+            let timer = duration;
+
+            function update() {
+                if (timer > 0) {
+                    resendBtn.textContent = `Resend OTP in ${timer}s`;
+                    resendBtn.classList.add('text-gray-400', 'cursor-not-allowed');
+                    resendBtn.classList.remove('text-indigo-600', 'hover:text-indigo-700');
+                    resendBtn.disabled = true;
+                    timer--;
+                    setTimeout(update, 1000);
+                } else {
+                    resendBtn.textContent = 'Resend OTP';
+                    resendBtn.classList.remove('text-gray-400', 'cursor-not-allowed');
+                    resendBtn.classList.add('text-indigo-600', 'hover:text-indigo-700');
+                    resendBtn.disabled = false;
+                }
+            }
+
+            update();
+        }
+
+        resendBtn.addEventListener('click', function() {
+            if (!resendBtn.classList.contains('cursor-not-allowed')) {
+                localStorage.setItem(STORAGE_KEY, Date.now().toString());
+            }
+        });
+
+        const remaining = getRemainingTime();
+        if (remaining > 0) {
+            startTimer(remaining);
+        }
     </script>
+
 </body>
 
 </html>

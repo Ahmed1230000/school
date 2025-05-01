@@ -7,6 +7,7 @@ use App\Helpers\CustomMessage;
 use App\Helpers\LogError;
 use App\Jobs\SendOtpJob;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 class AuthService
@@ -22,7 +23,7 @@ class AuthService
                 'email' => $data['email'],
                 'password' => bcrypt($data['password']),
             ]);
-            SendOtpJob::dispatch($user->id);
+            SendOtpJob::dispatchSync($user->id);
             $this->flashMessage('success', 'Registration successful! Please verify your account.');
             return redirect()->route('otp.verifyForm', ['user_id' => $user->id]);
         } catch (\Throwable $e) {
@@ -50,10 +51,12 @@ class AuthService
         }
     }
 
-    public function logout()
+    public function logout(Request $request)
     {
         try {
             auth()->logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
             $this->flashMessage('success', 'Logout Successful');
             return redirect()->route('login');
         } catch (\Throwable $e) {

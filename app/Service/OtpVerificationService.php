@@ -6,7 +6,7 @@ namespace App\Service;
 use App\Models\User;
 use Illuminate\Support\Facades\Log;
 
-class OtpVerificationService
+class OtpVerificationService extends OtpService
 {
     public function verifyOtp(User $user, $otpCode)
     {
@@ -23,11 +23,11 @@ class OtpVerificationService
         $otp->update(['is_used' => true]);
 
         $user->update(['otp_verified_at' => now()]);
+        
+        session()->forget('otp:user:id');
 
         Log::info('OTP verified successfully', ['user_id' => $user->id]);
 
         return true;
-
-        
     }
 }

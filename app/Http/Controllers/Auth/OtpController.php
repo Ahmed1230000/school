@@ -6,6 +6,7 @@ use App\Helpers\CustomMessage;
 use App\Helpers\LogError;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\VerifyOptFormRequest;
+use App\Jobs\SendOtpJob;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\Otp;
@@ -49,6 +50,11 @@ class OtpController extends Controller
     public function resendOtp($user_id)
     {
         $user = User::findOrFail($user_id);
+        if (!$user) {
+            $this->flashMessage('error', 'User not found');
+            return redirect()->back();
+        }
+        SendOtpJob::dispatchSync($user->id);
         $this->flashMessage('success', 'New OTP has been sent to your email');
         return redirect()->back();
     }
