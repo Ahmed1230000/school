@@ -36,9 +36,6 @@ class User extends Authenticatable implements AuthMustVerifyEmail
         'password',
         'otp_verified_at',
         'user_type',
-        'phone',
-        'address',
-        'title',
     ];
 
     /**
@@ -71,5 +68,9 @@ class User extends Authenticatable implements AuthMustVerifyEmail
     public function otp()
     {
         return $this->hasMany(Otp::class);
+    }
+    public function student()
+    {
+        return $this->hasOne(Student::class);
     }
 }
