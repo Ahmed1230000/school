@@ -12,6 +12,8 @@ class RoleAndPermissionSeeder extends Seeder
     /**
      * Run the database seeds.
      */
+    protected $models = ['user', 'teacher', 'student'];
+
     public function run(): void
     {
         $this->createRoles();
@@ -35,10 +37,9 @@ class RoleAndPermissionSeeder extends Seeder
 
     protected function createPermissions()
     {
-        $modelNames = ['user'];
         $actions = ['index', 'store', 'show', 'update', 'delete'];
 
-        foreach ($modelNames as $model) {
+        foreach ($this->models as $model) {
             foreach ($actions as $action) {
                 Permission::firstOrCreate([
                     'name' => "{$model}-{$action}",
@@ -50,9 +51,8 @@ class RoleAndPermissionSeeder extends Seeder
 
     protected function assignPermissionsToRoles()
     {
-        $models = ['user'];
 
-        foreach ($models as $model) {
+        foreach ($this->models as $model) {
             $this->assignModelPermissions($model);
         }
     }
@@ -64,7 +64,6 @@ class RoleAndPermissionSeeder extends Seeder
             'admin' => ['index', 'show', 'update'],
             'user' => ['show', 'update']
         ];
-
         foreach ($allPermissions as $role => $actions) {
             $permissions = array_map(fn($action) => "{$model}-{$action}", $actions);
             Role::findByName($role)->syncPermissions($permissions);

@@ -21,6 +21,9 @@ class AuthService
             $user = User::create([
                 'name' => $data['name'],
                 'email' => $data['email'],
+                'phone' => $data['phone'],
+                'address' => $data['address'],
+                'title' => $data['title'],
                 'password' => bcrypt($data['password']),
             ]);
             SendOtpJob::dispatchSync($user->id);
