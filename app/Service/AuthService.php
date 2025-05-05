@@ -7,6 +7,7 @@ use App\Helpers\CustomMessage;
 use App\Helpers\LogError;
 use App\Jobs\SendOtpJob;
 use App\Models\User;
+use Illuminate\Foundation\Support\Providers\RouteServiceProvider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -21,9 +22,7 @@ class AuthService
             $user = User::create([
                 'name' => $data['name'],
                 'email' => $data['email'],
-                'phone' => $data['phone'],
-                'address' => $data['address'],
-                'title' => $data['title'],
+                'user_type' => $data['user_type'],
                 'password' => bcrypt($data['password']),
             ]);
             SendOtpJob::dispatchSync($user->id);
@@ -43,10 +42,15 @@ class AuthService
                 $this->flashMessage('error', 'Invalid Credentials');
                 return redirect()->back();
             }
-            // $user = auth()->user();
+            $user = auth()->user();
             // $token = $user->createToken('auth_token')->accessToken;
             $this->flashMessage('success', 'Login Successful');
-            return redirect()->route($this->redirectTo);
+            
+            if ($user->user_type === 'student' && !$user->student) {
+                return redirect()->route('students.create');
+            }
+    
+            return redirect()->route('home');
         } catch (\Throwable $e) {
             $this->logError('Login failed', ['error' => $e->getMessage()]);
             $this->flashMessage('error', 'Something went wrong: ' . $e->getMessage());

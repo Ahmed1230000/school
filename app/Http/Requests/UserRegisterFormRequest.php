@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use App\Enum\UserType;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Enum;
 
 class UserRegisterFormRequest extends FormRequest
 {
@@ -25,11 +26,9 @@ class UserRegisterFormRequest extends FormRequest
     {
         return [
             'name'      => ['required', 'string', 'max:255'],
-            'email'     => ['required', 'string', 'email', 'max:255', Rule::unique('users', 'email')], // unique by id
+            'email'     => ['required', 'string', 'email', 'max:255', Rule::unique('users', 'email')],
             'password'  => ['required', 'string', 'min:4', 'max:8', 'confirmed'],
-            'phone'     => ['nullable', 'string', 'max:11'],
-            'address'   => ['nullable', 'string', 'max:100'],
-            'title'     => ['nullable', 'string', 'max:100'],
+            'user_type' => ['required', 'string', Rule::enum(UserType::class)],
         ];
     }
     /**
@@ -37,12 +36,6 @@ class UserRegisterFormRequest extends FormRequest
      *
      * @return void
      */
-    public function prepareForValidation(): void
-    {
-        $this->merge([
-            'user_type' => UserType::STUDENT->value,
-        ]);
-    }
 
     /**
      * Get the validation error messages.
@@ -68,9 +61,9 @@ class UserRegisterFormRequest extends FormRequest
             'password.max'                   => 'Password must not exceed 8 characters.',
             'password.confirmed'             => 'Password confirmation does not match.',
 
-            // 'user_type.required'             => 'User type is required.',
-            // 'user_type.string'               => 'User type must be a string.',
-            // 'user_type.in'                   => 'Invalid user type selected.',
+            'user_type.required'             => 'User type is required.',
+            'user_type.string'               => 'User type must be a string.',
+            'user_type.enum'                 => 'Invalid user type selected' . 'student or teacher',
 
             'phone.string'                   => 'Phone must be a string.',
             'phone.max'                      => 'Phone must not exceed 11 characters.',

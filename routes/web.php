@@ -17,6 +17,7 @@ use App\Http\Controllers\RoleAndPermissions\{
     RoleController,
     AssignRoleToUserController
 };
+use App\Http\Controllers\StudentController;
 
 Route::middleware(['guest'])->group(function () {
     Route::get('/register', [RegisterController::class, 'showRegisterForm'])->name('register.form');
@@ -65,4 +66,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/assign-permission-to-user', [AssignPermissionToUserController::class, 'assignPermissionToUser'])->name('assign-permission-to-user.store');
     Route::get('/revoke-permission-from-user', [AssignPermissionToUserController::class, 'showRevokePermissionToUserForm'])->name('revoke-permission-from-user.show');
     Route::post('/revoke-permission-from-user', [AssignPermissionToUserController::class, 'revokePermissionFromUser'])->name('revoke-permission-from-user.revoke');
+
+    // Student Management
+    Route::resource('students', StudentController::class);
 });
