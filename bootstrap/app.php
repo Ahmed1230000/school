@@ -13,7 +13,7 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        StartSession::class; // Start session middleware
+        StartSession::class;
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

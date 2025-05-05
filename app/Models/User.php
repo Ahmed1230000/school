@@ -7,6 +7,7 @@ namespace App\Models;
 use Illuminate\Auth\MustVerifyEmail;
 use Illuminate\Contracts\Auth\MustVerifyEmail as AuthMustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
@@ -15,7 +16,12 @@ use Spatie\Permission\Traits\HasRoles;
 class User extends Authenticatable implements AuthMustVerifyEmail
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, HasApiTokens, MustVerifyEmail, HasRoles;
+    use HasFactory,
+        Notifiable,
+        HasApiTokens,
+        MustVerifyEmail,
+        HasRoles,
+        SoftDeletes;
 
     protected $guard_name = 'web';
 
@@ -29,6 +35,10 @@ class User extends Authenticatable implements AuthMustVerifyEmail
         'email',
         'password',
         'otp_verified_at',
+        'user_type',
+        'phone',
+        'address',
+        'title',
     ];
 
     /**
@@ -52,6 +62,9 @@ class User extends Authenticatable implements AuthMustVerifyEmail
             'email_verified_at' => 'datetime',
             'otp_verified_at' => 'datetime',
             'password' => 'hashed',
+            'created_at' => 'datetime',
+            'updated_at' => 'datetime',
+            'deleted_at' => 'datetime',
         ];
     }
 

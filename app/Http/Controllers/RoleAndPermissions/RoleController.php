@@ -2,163 +2,104 @@
 
 namespace App\Http\Controllers\RoleAndPermissions;
 
-use App\Helpers\CustomMessage;
+use App\Contracts\ServiceInterface;
 use App\Helpers\LogError;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RoleStoreFormRequest;
 use App\Http\Requests\RoleUpdateFormRequest;
-use Illuminate\Http\Request;
-use Spatie\Permission\Models\Permission;
+use App\Service\RoleService;
+use Illuminate\Support\Facades\Log;
 use Spatie\Permission\Models\Role;
 
 class RoleController extends Controller
 {
-    use LogError, CustomMessage;
-    /**
-     * Display a listing of the resource.
-     */
+    use LogError;
+    protected $roleService;
+
+    public function __construct(RoleService $roleService)
+    {
+        $this->roleService = $roleService;
+    }
+
     public function index()
     {
         try {
-            // Fetch all roles from the database
-            $roles = Role::all();
-
-            // Return the view with the roles data
+            $roles = $this->roleService->getAll();
             return view('roles.index-role', compact('roles'));
         } catch (\Exception $e) {
-            // Handle the exception
-            $this->logError('Error fetching roles: ' . $e->getMessage(), [
-                'exception' => $e,
-            ]);
-            $this->flashMessage('error', 'Failed to fetch roles.');
+            // Log the error message and context
+            $this->logError($e->getMessage(), ['context' => $e]);
+
             return redirect()->back();
         }
     }
 
-    /** 
-     * 
-     * 
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        try {
-            // Fetch all roles from the database
-            $roles = Role::all();
-            // Return the view with the roles data
-            return view('roles.create-role', compact('roles'));
-        } catch (\Exception $e) {
-            // Handle the exception
-            $this->logError('Error fetching roles: ' . $e->getMessage(), [
-                'exception' => $e,
-            ]);
-            $this->flashMessage('error', 'Failed to fetch roles.');
-            return redirect()->back();
-        }
+        return view('roles.create-role');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(RoleStoreFormRequest $request)
     {
         try {
-            // Create a new role
-            $role = Role::createOrFirst($request->validated());
-            if ($role) {
-                $this->flashMessage('success', 'Role created successfully.');
-                return redirect()->route('roles.index');
-            }
+            $this->roleService->create($request->validated());
+            return redirect()->route('roles.index');
         } catch (\Exception $e) {
-            // Handle the exception
-            $this->logError('Error creating role: ' . $e->getMessage(), [
-                'exception' => $e,
-            ]);
-            $this->flashMessage('error', 'Failed to create role.');
-            return redirect()->back();
+            // Log the error message and context
+            $this->logError($e->getMessage(), ['context' => $e]);
+
+            return redirect()->back()->withInput();
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
         try {
-            // Fetch the role by ID
-            $role = Role::findOrFail($id);
-            // Return the view with the role data
+            $role = $this->roleService->getById($id);
             return view('roles.show-role', compact('role'));
         } catch (\Exception $e) {
-            // Handle the exception
-            $this->logError('Error fetching role: ' . $e->getMessage(), [
-                'exception' => $e,
-            ]);
-            $this->flashMessage('error', 'Failed to fetch role.');
+            // Log the error message and context
+            $this->logError($e->getMessage(), ['context' => $e]);
+
             return redirect()->back();
         }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
         try {
-            // Fetch the role by ID
-            $role = Role::findOrFail($id);
-            // Return the view with the role data
+            $role = $this->roleService->getById($id);
             return view('roles.edit-role', compact('role'));
         } catch (\Exception $e) {
-            // Handle the exception
-            $this->logError('Error fetching role: ' . $e->getMessage(), [
-                'exception' => $e,
-            ]);
-            $this->flashMessage('error', 'Failed to fetch role.');
+            // Log the error message and context
+            $this->logError($e->getMessage(), ['context' => $e]);
+
             return redirect()->back();
         }
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(RoleUpdateFormRequest $request, string $id)
     {
         try {
-            // Find the role by ID
-            $role = Role::findOrFail($id);
-            // Update the role with the validated data
-            $role->update($request->validated());
-            $this->flashMessage('success', 'Role updated successfully.');
+            $this->roleService->update($request->validated(), $id);
             return redirect()->route('roles.index');
         } catch (\Exception $e) {
-            // Handle the exception
-            $this->logError('Error updating role: ' . $e->getMessage(), [
-                'exception' => $e,
-            ]);
-            $this->flashMessage('error', 'Failed to update role.');
-            return redirect()->back();
+            // Log the error message and context
+            $this->logError($e->getMessage(), ['context' => $e]);
+
+            return redirect()->back()->withInput();
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
         try {
-            // Find the role by ID
-            $role = Role::findOrFail($id);
-            // Delete the role
-            $role->delete();
-            $this->flashMessage('success', 'Role deleted successfully.');
+            $this->roleService->delete($id);
             return redirect()->route('roles.index');
         } catch (\Exception $e) {
-            // Handle the exception
-            $this->logError('Error deleting role: ' . $e->getMessage(), [
-                'exception' => $e,
-            ]);
-            $this->flashMessage('error', 'Failed to delete role.');
+            // Log the error message and context
+            $this->logError($e->getMessage(), ['context' => $e]);
+
             return redirect()->back();
         }
     }

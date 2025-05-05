@@ -71,10 +71,27 @@
     <nav class="bg-white shadow-lg p-4 sticky top-0 z-1000">
         <div class="container mx-auto flex justify-between items-center">
             <a href="{{ url('/') }}" class="text-2xl font-bold text-blue-600">MySchool</a>
-            <ul class="flex space-x-6">
+            <ul class="flex space-x-6 items-center">
                 <li><a href="{{ url('/dashboard') }}" class="text-gray-700 hover:text-blue-600 nav-link">Dashboard</a></li>
                 <li><a href="{{ url('/students') }}" class="text-gray-700 hover:text-blue-600 nav-link">Students</a></li>
                 <li><a href="{{ url('/teachers') }}" class="text-gray-700 hover:text-blue-600 nav-link">Teachers</a></li>
+
+                <!-- User Dropdown -->
+                <li x-data="{ userMenuOpen: false }" class="relative">
+                    <button @click="userMenuOpen = !userMenuOpen" class="w-9 h-9 rounded-full bg-gray-200 flex items-center justify-center text-gray-700 font-bold hover:bg-gray-300 transition">
+                        {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                    </button>
+                    <div x-show="userMenuOpen" @click.away="userMenuOpen = false" x-transition
+                        class="absolute right-0 mt-2 w-40 bg-white shadow-lg rounded border text-sm z-50">
+                        <div class="px-4 py-2 border-b text-gray-700">{{ Auth::user()->name }}</div>
+                        <form method="POST" action="{{ route('logout.perform') }}">
+                            @csrf
+                            <button type="submit" class="w-full text-left px-4 py-2 hover:bg-red-50 text-red-600">Logout</button>
+                        </form>
+                    </div>
+                </li>
+
+                <!-- Settings -->
                 <li>
                     <button @click="sidebarOpen = true" class="text-gray-700 hover:text-blue-600 nav-link focus:outline-none flex items-center">
                         <i class="fas fa-cog mr-1"></i> Settings
@@ -82,6 +99,7 @@
                 </li>
             </ul>
         </div>
+
     </nav>
 
     <!-- Main Content -->

@@ -2,34 +2,38 @@
 
 namespace App\Http\Controllers\RoleAndPermissions;
 
+use App\Contracts\ServiceInterface;
 use App\Helpers\CustomMessage;
 use App\Helpers\LogError;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PermissionStoreFormRequest;
 use App\Http\Requests\PermissionUpdateFormRequest;
+use App\Service\PermissionService;
 use Spatie\Permission\Models\Permission;
 
 class PermissionController extends Controller
 {
-    use LogError, CustomMessage;
-
+    use LogError;
+    protected $permissionService;
+    /**
+     * Constructor to inject dependencies
+     */
+    public function __construct(PermissionService $permissionService)
+    {
+        // Dependency injection of the permission service
+        $this->permissionService = $permissionService;
+    }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
         try {
-            // Fetch all permission from the database
-            $permissions = Permission::all();
-
-            // Return the view with the permission data
+            $permissions = $this->permissionService->getAll();
             return view('permission.index-permission', compact('permissions'));
         } catch (\Exception $e) {
-            // Handle the exception
-            $this->logError('Error fetching permission: ' . $e->getMessage(), [
-                'exception' => $e,
-            ]);
-            $this->flashMessage('error', 'Failed to fetch permission.');
+            // Log the error message and context
+            $this->logError($e->getMessage(), ['context' => $e]);
             return redirect()->back();
         }
     }
@@ -40,17 +44,11 @@ class PermissionController extends Controller
     public function create()
     {
         try {
-            // Fetch all permission from the database
-            $permissions = Permission::all();
-
-            // Return the view with the permission data
-            return view('permission.create-permission', compact('permissions'));
+            return view('permission.create-permission');
         } catch (\Exception $e) {
-            // Handle the exception
-            $this->logError('Error fetching permission: ' . $e->getMessage(), [
-                'exception' => $e,
-            ]);
-            $this->flashMessage('error', 'Failed to fetch permission.');
+            // Log the error message and context
+            $this->logError($e->getMessage(), ['context' => $e]);
+
             return redirect()->back();
         }
     }
@@ -61,20 +59,12 @@ class PermissionController extends Controller
     public function store(PermissionStoreFormRequest $request)
     {
         try {
-            // Create a new permission
-            $permission = Permission::create($request->validated());
-            if ($permission) {
-                // Flash success message
-                $this->flashMessage('success', 'Permission created successfully.');
-                return redirect()->route('permissions.index');
-            }
+            $permission = $this->permissionService->create($request->validated());
+            return redirect()->route('permissions.index');
             // Redirect to the index page
         } catch (\Exception $e) {
-            // Handle the exception
-            $this->logError('Error creating permission: ' . $e->getMessage(), [
-                'exception' => $e,
-            ]);
-            $this->flashMessage('error', 'Failed to create permission.');
+            // Log the error message and context
+            $this->logError($e->getMessage(), ['context' => $e]);
 
             return redirect()->back();
         }
@@ -86,16 +76,12 @@ class PermissionController extends Controller
     public function show(string $id)
     {
         try {
-            // Fetch the permission by ID
-            $permission = Permission::findOrFail($id);
-            // Return the view with the permission data
+            $permission = $this->permissionService->getById($id);
             return view('permission.show-permission', compact('permission'));
         } catch (\Exception $e) {
-            // Handle the exception
-            $this->logError('Error fetching permission: ' . $e->getMessage(), [
-                'exception' => $e,
-            ]);
-            $this->flashMessage('error', 'Failed to fetch permission.');
+            // Log the error message and context
+            $this->logError($e->getMessage(), ['context' => $e]);
+
             return redirect()->back();
         }
     }
@@ -106,17 +92,13 @@ class PermissionController extends Controller
     public function edit(string $id)
     {
         try {
-            // Fetch the permission by ID
-            $permission = Permission::findOrFail($id);
-
+            $permission = $this->permissionService->getById($id);
             // Return the view with the permission data
             return view('permission.edit-permission', compact('permission'));
         } catch (\Exception $e) {
-            // Handle the exception
-            $this->logError('Error fetching permission: ' . $e->getMessage(), [
-                'exception' => $e,
-            ]);
-            $this->flashMessage('error', 'Failed to fetch permission.');
+            // Log the error message and context
+            $this->logError($e->getMessage(), ['context' => $e]);
+
             return redirect()->back();
         }
     }
@@ -127,23 +109,12 @@ class PermissionController extends Controller
     public function update(PermissionUpdateFormRequest $request, string $id)
     {
         try {
-            // Fetch the permission by ID
-            $permission = Permission::findOrFail($id);
-
-            // Update the permission
-            $permission->update($request->validated());
-
-            // Flash success message
-            $this->flashMessage('success', 'Permission updated successfully.');
-
-            // Redirect to the index page
+            $this->permissionService->update($request->validated(), $id);
             return redirect()->route('permissions.index');
         } catch (\Exception $e) {
-            // Handle the exception
-            $this->logError('Error updating permission: ' . $e->getMessage(), [
-                'exception' => $e,
-            ]);
-            $this->flashMessage('error', 'Failed to update permission.');
+            // Log the error message and context
+            $this->logError($e->getMessage(), ['context' => $e]);
+
             return redirect()->back();
         }
     }
@@ -154,23 +125,12 @@ class PermissionController extends Controller
     public function destroy(string $id)
     {
         try {
-            // Fetch the permission by ID
-            $permission = Permission::findOrFail($id);
-
-            // Delete the permission
-            $permission->delete();
-
-            // Flash success message
-            $this->flashMessage('success', 'Permission deleted successfully.');
-
-            // Redirect to the index page
+            $this->permissionService->delete($id);
             return redirect()->route('permissions.index');
         } catch (\Exception $e) {
-            // Handle the exception
-            $this->logError('Error deleting permission: ' . $e->getMessage(), [
-                'exception' => $e,
-            ]);
-            $this->flashMessage('error', 'Failed to delete permission.');
+            // Log the error message and context
+            $this->logError($e->getMessage(), ['context' => $e]);
+
             return redirect()->back();
         }
     }

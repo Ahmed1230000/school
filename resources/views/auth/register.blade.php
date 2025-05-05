@@ -100,39 +100,93 @@
         </div>
         @endif
 
-        <form action="{{ route('register.store') }}" method="POST" class="space-y-5">
+        <form action="{{ route('register.store') }}" method="POST" class="space-y-6">
             @csrf
 
-            <div class="relative">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 absolute left-3 top-3.5 text-white/70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
-                <input type="text" name="name" value="{{ old('name') }}" required placeholder="Full Name"
-                    class="w-full bg-white/10 border border-white/20 rounded-xl py-3 pl-10 pr-4 text-white placeholder-white/50 focus:outline-none focus:border-white/40 input-glow transition duration-300">
-            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Full Name -->
+                <div class="relative col-span-1 md:col-span-2">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                        class="h-5 w-5 absolute left-3 top-3.5 text-white/70" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                    <input type="text" name="name" value="{{ old('name') }}" required placeholder="Full Name"
+                        class="w-full bg-white/10 border border-white/20 rounded-xl py-3 pl-10 pr-4 text-white placeholder-white/50 input-glow focus:outline-none focus:border-white/40 transition duration-300">
+                </div>
 
-            <div class="relative">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 absolute left-3 top-3.5 text-white/70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                </svg>
-                <input type="email" name="email" value="{{ old('email') }}" required placeholder="Email Address"
-                    class="w-full bg-white/10 border border-white/20 rounded-xl py-3 pl-10 pr-4 text-white placeholder-white/50 focus:outline-none focus:border-white/40 input-glow transition duration-300">
-            </div>
+                <!-- Email -->
+                <div class="relative">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                        class="h-5 w-5 absolute left-3 top-3.5 text-white/70" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                    <input type="email" name="email" value="{{ old('email') }}" required placeholder="Email Address"
+                        class="w-full bg-white/10 border border-white/20 rounded-xl py-3 pl-10 pr-4 text-white placeholder-white/50 input-glow focus:outline-none focus:border-white/40 transition duration-300">
+                </div>
 
-            <div class="relative">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 absolute left-3 top-3.5 text-white/70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                </svg>
-                <input type="password" name="password" required placeholder="Password"
-                    class="w-full bg-white/10 border border-white/20 rounded-xl py-3 pl-10 pr-4 text-white placeholder-white/50 focus:outline-none focus:border-white/40 input-glow transition duration-300">
-            </div>
+                <!-- Phone -->
+                <div class="relative">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                        class="h-5 w-5 absolute left-3 top-3.5 text-white/70" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M3 10h1m4 0h1m4 0h1m4 0h1m-9 4h4m-4-4v4m0 0v4m0-4h4" />
+                    </svg>
+                    <input type="text" name="phone" value="{{ old('phone') }}" placeholder="Phone Number"
+                        class="w-full bg-white/10 border border-white/20 rounded-xl py-3 pl-10 pr-4 text-white placeholder-white/50 input-glow focus:outline-none focus:border-white/40 transition duration-300">
+                </div>
 
-            <div class="relative">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 absolute left-3 top-3.5 text-white/70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                </svg>
-                <input type="password" name="password_confirmation" required placeholder="Confirm Password"
-                    class="w-full bg-white/10 border border-white/20 rounded-xl py-3 pl-10 pr-4 text-white placeholder-white/50 focus:outline-none focus:border-white/40 input-glow transition duration-300">
+                <!-- Address -->
+                <div class="relative">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                        class="h-5 w-5 absolute left-3 top-3.5 text-white/70" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M3 5h12M9 3v2m0 4v12" />
+                    </svg>
+                    <input type="text" name="address" value="{{ old('address') }}" placeholder="Address"
+                        class="w-full bg-white/10 border border-white/20 rounded-xl py-3 pl-10 pr-4 text-white placeholder-white/50 input-glow focus:outline-none focus:border-white/40 transition duration-300">
+                </div>
+
+                <!-- Title -->
+                <div class="relative">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                        class="h-5 w-5 absolute left-3 top-3.5 text-white/70" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 4v16m8-8H4" />
+                    </svg>
+                    <input type="text" name="title" value="{{ old('title') }}" placeholder="Title"
+                        class="w-full bg-white/10 border border-white/20 rounded-xl py-3 pl-10 pr-4 text-white placeholder-white/50 input-glow focus:outline-none focus:border-white/40 transition duration-300">
+                </div>
+
+                <!-- Password -->
+                <div class="relative">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                        class="h-5 w-5 absolute left-3 top-3.5 text-white/70" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                    <input type="password" name="password" required placeholder="Password"
+                        class="w-full bg-white/10 border border-white/20 rounded-xl py-3 pl-10 pr-4 text-white placeholder-white/50 input-glow focus:outline-none focus:border-white/40 transition duration-300">
+                </div>
+
+                <!-- Password Confirmation -->
+                <div class="relative">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                        class="h-5 w-5 absolute left-3 top-3.5 text-white/70" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M5 13l4 4L19 7" />
+                    </svg>
+                    <input type="password" name="password_confirmation" required placeholder="Confirm Password"
+                        class="w-full bg-white/10 border border-white/20 rounded-xl py-3 pl-10 pr-4 text-white placeholder-white/50 input-glow focus:outline-none focus:border-white/40 transition duration-300">
+                </div>
             </div>
 
             <button type="submit"
@@ -140,6 +194,7 @@
                 Create Account
             </button>
         </form>
+
 
         <div class="text-center mt-6 text-white/80">
             Already have an account?

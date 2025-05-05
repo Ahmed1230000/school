@@ -14,7 +14,7 @@ trait CustomMessage
         if (in_array($type, $validType)) {
             Session::flash($type, $message);
         } else {
-            Session::flash('error', 'Invalid message type!');
+            Session::flash('UnKnown', 'Invalid message type!');
         }
     }
 }
