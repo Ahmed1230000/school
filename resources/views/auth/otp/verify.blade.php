@@ -59,7 +59,6 @@
             </button>
         </form>
 
-        <!-- 🟢 هذا هو الفورم الصحيح للـ Resend -->
         <div class="flex justify-between text-sm items-center mt-4">
             <p class="text-gray-600">Didn't get the OTP?</p>
 
