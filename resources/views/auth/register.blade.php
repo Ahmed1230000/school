@@ -127,22 +127,6 @@
                     <input type="email" name="email" value="{{ old('email') }}" required placeholder="Email Address"
                         class="w-full bg-white/10 border border-white/20 rounded-xl py-3 pl-10 pr-4 text-white placeholder-white/50 input-glow focus:outline-none focus:border-white/40 transition duration-300">
                 </div>
-
-                <!-- User Type (Student or Teacher) -->
-                <div class="relative">
-                    <svg xmlns="http://www.w3.org/2000/svg"
-                        class="h-5 w-5 absolute left-3 top-3.5 text-white/70" fill="none"
-                        viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 14a7 7 0 00-7 7h14a7 7 0 00-7-7zM12 4a4 4 0 118 0 4 4 0 01-8 0z" />
-                    </svg>
-                    <select name="user_type" required
-                        class="w-full bg-white/10 border border-white/40 rounded-xl py-3 pl-10 pr-4 text-white placeholder-white/50 input-glow focus:outline-none focus:border-white/60 transition duration-300 appearance-none hover:bg-white/20">
-                        <option value="" disabled selected class="text-gray-400">Select User Type</option>
-                        <option value="student" class="text-gray-800">Student</option>
-                        <option value="teacher" class="text-gray-800">Teacher</option>
-                    </select>
-                </div>
                 <!-- Password -->
                 <div class="relative">
                     <svg xmlns="http://www.w3.org/2000/svg"

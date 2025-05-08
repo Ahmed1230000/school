@@ -36,6 +36,11 @@ class TeacherStoreFormRequest extends FormRequest
             'experience'              => ['required', 'string', 'max:255'],
             'emergency_contact_name'  => ['required', 'string', 'max:255'],
             'emergency_contact_phone' => ['required', 'string', 'max:20', Rule::unique('teachers', 'emergency_contact_phone')],
+            'students'                => ['nullable', 'array'],
+            'students.*'              => [
+                'integer',
+                Rule::exists('students', 'id')->whereNull('deleted_at')
+            ],
         ];
     }
     public function messages(): array

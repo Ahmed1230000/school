@@ -3,7 +3,8 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>My App</title>
+    <title>@yield('title', 'School')</title>
+
     @vite('resources/css/app.css')
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">

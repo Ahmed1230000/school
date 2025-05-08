@@ -5,16 +5,21 @@ namespace App\Http\Controllers;
 use App\Helpers\LogError;
 use App\Http\Requests\TeacherStoreFormRequest;
 use App\Http\Requests\TeacherUpdateFormRequest;
+use App\Service\StudentService;
 use App\Service\TeacherService;
 
 class TeacherController extends Controller
 {
     use LogError;
     protected $teacherService;
+    protected $studentService;
 
-    public function __construct(TeacherService $teacherService)
-    {
+    public function __construct(
+        TeacherService $teacherService,
+        StudentService $studentService
+    ) {
         $this->teacherService = $teacherService;
+        $this->studentService = $studentService;
     }
     /**
      * Display a listing of the resource.
@@ -37,7 +42,8 @@ class TeacherController extends Controller
      */
     public function create()
     {
-        return view('teachers.create-teacher');
+        $students = $this->studentService->getAll();
+        return view('teachers.create-teacher', compact('students'));
     }
 
     /**
@@ -63,6 +69,7 @@ class TeacherController extends Controller
     {
         try {
             $teacher = $this->teacherService->getById($id);
+
             return view('teachers.show-teacher', compact('teacher'));
         } catch (\Exception $e) {
             // Log the error message and context
@@ -79,7 +86,9 @@ class TeacherController extends Controller
     {
         try {
             $teacher = $this->teacherService->getById($id);
-            return view('teachers.edit-teacher', compact('teacher'));
+            $students = $this->studentService->getAll();
+
+            return view('teachers.edit-teacher', compact('teacher', 'students'));
         } catch (\Exception $e) {
             // Log the error message and context
             $this->logError($e->getMessage(), ['context' => $e]);

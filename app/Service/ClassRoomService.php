@@ -1,36 +1,35 @@
 <?php
 
-
 namespace App\Service;
 
 use App\Contracts\CustomeMessageInterface;
 use App\Contracts\LogErrorInterface;
-use App\Models\Teacher;
-use App\Repositories\TeacherRepository;
+use App\Repositories\ClassRoomRepository;
 
-class TeacherService
+class ClassRoomService
 {
-    protected $teacherRepository;
+
+    protected $classRoomRepository;
     protected $logError;
     protected $message;
 
     public function __construct(
-        TeacherRepository $teacherRepository,
+        ClassRoomRepository $classRoomRepository,
         LogErrorInterface $logError,
         CustomeMessageInterface $customMessage
     ) {
-        $this->teacherRepository = $teacherRepository;
+        $this->classRoomRepository = $classRoomRepository;
         $this->logError = $logError;
         $this->message = $customMessage;
     }
 
-    public function getALl()
+    public function getAll()
     {
         try {
-            return $this->teacherRepository->all();
+            return $this->classRoomRepository->all();
         } catch (\Exception $e) {
             $this->logError->logError($e->getMessage(), ['context' => $e]);
-            $this->message->flashMessage('error', 'Failed to fetch teachers!');
+            $this->message->flashMessage('error', 'Failed to fetch students!');
             throw $e;
         }
     }
@@ -38,41 +37,42 @@ class TeacherService
     public function getById($id)
     {
         try {
-            return $this->teacherRepository->find($id);
+            return $this->classRoomRepository->find($id);
         } catch (\Exception $e) {
             $this->logError->logError($e->getMessage(), ['context' => $e]);
-            $this->message->flashMessage('error', 'Failed to fetch teacher!');
-            throw $e;
-        }
-    }
-    public function create(array $data)
-    {
-        try {
-            return $this->teacherRepository->create($data);
-        } catch (\Exception $e) {
-            $this->logError->logError($e->getMessage(), ['context' => $e]);
-            $this->message->flashMessage('error', 'Failed to create teacher!');
+            $this->message->flashMessage('error', 'Failed to fetch student!');
             throw $e;
         }
     }
 
-    public function update(array $data, $id)
+    public function create(array $data)
     {
         try {
-            return $this->teacherRepository->update($data,  $id);
+            return $this->classRoomRepository->create($data);
         } catch (\Exception $e) {
             $this->logError->logError($e->getMessage(), ['context' => $e]);
-            $this->message->flashMessage('error', 'Failed to update teacher!');
+            $this->message->flashMessage('error', 'Failed to create student!');
             throw $e;
         }
     }
+    public function update(array $data, $id)
+    {
+        try {
+            return $this->classRoomRepository->update($data,  $id);
+        } catch (\Exception $e) {
+            $this->logError->logError($e->getMessage(), ['context' => $e]);
+            $this->message->flashMessage('error', 'Failed to update student!');
+            throw $e;
+        }
+    }
+
     public function delete($id)
     {
         try {
-            return $this->teacherRepository->delete($id);
+            return $this->classRoomRepository->delete($id);
         } catch (\Exception $e) {
             $this->logError->logError($e->getMessage(), ['context' => $e]);
-            $this->message->flashMessage('error', 'Failed to delete teacher!');
+            $this->message->flashMessage('error', 'Failed to delete student!');
             throw $e;
         }
     }

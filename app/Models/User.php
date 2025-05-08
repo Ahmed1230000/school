@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
+use App\Enum\StatusType;
 use Illuminate\Auth\MustVerifyEmail;
 use Illuminate\Contracts\Auth\MustVerifyEmail as AuthMustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -35,7 +36,6 @@ class User extends Authenticatable implements AuthMustVerifyEmail
         'email',
         'password',
         'otp_verified_at',
-        'user_type',
     ];
 
     /**
@@ -76,5 +76,23 @@ class User extends Authenticatable implements AuthMustVerifyEmail
     public function teacher()
     {
         return $this->hasOne(Teacher::class);
+    }
+
+    public function classRoom()
+    {
+        return $this->hasMany(ClassRoom::class, 'created_by');
+    }
+
+    public function isSuperAdmin()
+    {
+        return $this->hasRole('super-admin');
+    }
+
+    public function canLogin()
+    {
+        if ($this->user_type === 'teacher') {
+            return $this->teacher && $this->teacher->status === StatusType::APPROVED->value;
+        }
+        return true;
     }
 }

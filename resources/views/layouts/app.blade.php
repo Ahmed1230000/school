@@ -72,10 +72,10 @@
         <div class="container mx-auto flex justify-between items-center">
             <a href="{{ url('/') }}" class="text-2xl font-bold text-blue-600">MySchool</a>
             <ul class="flex space-x-6 items-center">
-                <li><a href="{{ url('/dashboard') }}" class="text-gray-700 hover:text-blue-600 nav-link">Dashboard</a></li>
+                <li><a href="{{ url('/') }}" class="text-gray-700 hover:text-blue-600 nav-link">Dashboard</a></li>
                 <li><a href="{{ url('/students') }}" class="text-gray-700 hover:text-blue-600 nav-link">Students</a></li>
                 <li><a href="{{ url('/teachers') }}" class="text-gray-700 hover:text-blue-600 nav-link">Teachers</a></li>
-
+                <li><a href="{{ url('/classrooms') }}" class="text-gray-700 hover:text-blue-600 nav-link">Classroom</a></li>
                 <!-- User Dropdown -->
                 <li x-data="{ userMenuOpen: false }" class="relative">
                     <button @click="userMenuOpen = !userMenuOpen" class="w-9 h-9 rounded-full bg-gray-200 flex items-center justify-center text-gray-700 font-bold hover:bg-gray-300 transition">
@@ -90,7 +90,6 @@
                         </form>
                     </div>
                 </li>
-
                 <!-- Settings -->
                 <li>
                     <button @click="sidebarOpen = true" class="text-gray-700 hover:text-blue-600 nav-link focus:outline-none flex items-center">
@@ -99,7 +98,6 @@
                 </li>
             </ul>
         </div>
-
     </nav>
 
     <!-- Main Content -->
@@ -123,10 +121,8 @@
         x-transition:leave-start="translate-x-0"
         x-transition:leave-end="translate-x-full"
         class="fixed inset-0 z-50 flex justify-end">
-
         <!-- Overlay -->
         <div class="fixed inset-0 bg-black bg-opacity-50" @click="sidebarOpen = false"></div>
-
         <!-- Sidebar -->
         <aside class="relative bg-white w-80 max-w-full h-full shadow-xl z-50 p-6 overflow-y-auto">
             <div class="flex justify-between items-center mb-6">
@@ -135,7 +131,6 @@
                     <i class="fas fa-times text-lg"></i>
                 </button>
             </div>
-
             <nav class="space-y-2">
                 <a href="{{ route('roles.index') }}" class="sidebar-link text-blue-600 hover:text-blue-700">
                     <i class="fas fa-user-shield mr-2"></i> Manage Roles

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\{
     EmailVerificationController,
@@ -10,6 +11,7 @@ use App\Http\Controllers\Auth\{
     SendResetPasswordController,
     OtpController
 };
+use App\Http\Controllers\ClassRoomController;
 use App\Http\Controllers\RoleAndPermissions\{
     AssignPermissionToRoleController,
     AssignPermissionToUserController,
@@ -71,4 +73,5 @@ Route::middleware(['auth'])->group(function () {
     // Student Management
     Route::resource('/students', StudentController::class);
     Route::resource('/teachers', TeacherController::class);
+    Route::resource('/classrooms', ClassRoomController::class);
 });

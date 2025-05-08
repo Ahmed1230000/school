@@ -37,4 +37,13 @@ class Teacher extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function students()
+    {
+        return $this->belongsToMany(Student::class, 'student_teacher', 'teacher_id', 'student_id')->withTimestamps();
+    }
+    public function classrooms()
+    {
+        return $this->belongsToMany(ClassRoom::class, 'classroom_teacher', 'teacher_id', 'classroom_id')->withTimestamps();
+    }
 }

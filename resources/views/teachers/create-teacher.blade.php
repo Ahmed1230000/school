@@ -157,6 +157,24 @@
                             <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
                             @enderror
                         </div>
+
+                        <!-- Students -->
+                        <div class="sm:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Assign Students</label>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-h-40 overflow-y-auto p-4 border border-gray-300 rounded-md bg-white">
+                                @foreach ($students as $student)
+                                <label class="flex items-center space-x-2">
+                                    <input type="checkbox" name="students[]" value="{{ $student->id }}"
+                                        {{ in_array($student->id, old('students', [])) ? 'checked' : '' }}
+                                        class="h-4 w-4 text-blue-600 focus:ring-blue-300 border-gray-300 rounded">
+                                    <span class="text-sm text-gray-700">{{ $student->full_name }}</span>
+                                </label>
+                                @endforeach
+                            </div>
+                            @error('students')
+                            <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
                     </div>
 
                     <!-- Buttons -->
@@ -188,6 +206,9 @@
         background-repeat: no-repeat;
         background-position: right 0.75rem center;
         background-size: 1.5rem;
+    }
+    .max-h-40 {
+        max-height: 10rem;
     }
 </style>
 @endsection

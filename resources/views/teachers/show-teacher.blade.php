@@ -94,6 +94,22 @@
                 <label class="block text-sm font-medium text-gray-700">Emergency Contact</label>
                 <p class="mt-1 text-gray-900">{{ $teacher->emergency_contact_name }} ({{ $teacher->emergency_contact_phone }})</p>
               </div>
+
+              <!-- Assigned Students -->
+              <div class="sm:col-span-2">
+                <label class="block text-sm font-medium text-gray-700">Assigned Students</label>
+                <div class="mt-1 p-4 border border-gray-300 rounded-md bg-white">
+                  @if ($teacher->students->isEmpty())
+                    <p class="text-sm text-gray-600">No students assigned.</p>
+                  @else
+                    <ul class="list-disc pl-5 space-y-1">
+                      @foreach ($teacher->students as $student)
+                        <li class="text-sm text-gray-900">{{ $student->full_name }}</li>
+                      @endforeach
+                    </ul>
+                  @endif
+                </div>
+              </div>
             </div>
           </div>
 
