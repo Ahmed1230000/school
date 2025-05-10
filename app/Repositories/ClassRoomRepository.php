@@ -2,10 +2,14 @@
 
 namespace App\Repositories;
 
+use App\Contracts\QueryableRepositoryInterface;
+use App\Contracts\RepositoryInterface;
+use App\Helpers\QueryableTrait;
 use App\Models\ClassRoom;
 
-class ClassRoomRepository extends BaseRepository
+class ClassRoomRepository extends BaseRepository implements RepositoryInterface, QueryableRepositoryInterface
 {
+    use QueryableTrait;
 
     public function __construct(ClassRoom $model)
     {
@@ -17,33 +21,28 @@ class ClassRoomRepository extends BaseRepository
         $classRoom = $this->model->create($data);
 
         if (isset($data['teachers']) && is_array($data['teachers'])) {
-            $classRoom->teachers()->attach($data['teachers']);
+            $teachers = array_filter($data['teachers'], 'is_numeric');
+            $classRoom->teachers()->attach($teachers);
         }
         if (isset($data['students']) && is_array($data['students'])) {
-            $classRoom->students()->attach($data['students']);
+            $students = array_filter($data['students'], 'is_numeric');
+            $classRoom->students()->attach($students);
         }
         return $classRoom;
     }
-
 
     public function update(array $data, $id): ClassRoom
-    {
-        $classRoom = $this->find($id);
-        if ($classRoom) {
-            $classRoom->update($data);
+{
+    $classRoom = $this->find($id);
+    if ($classRoom) {
+        $classRoom->update($data);
 
-            if (array_key_exists('teachers', $data)) {
-                $teachers = $data['teachers'] ?? [];
-                $teachers = array_filter($teachers, 'is_numeric');
-                $classRoom->teachers()->sync($teachers);
-            }
+        $teachers = isset($data['teachers']) && is_array($data['teachers']) ? array_filter($data['teachers'], 'is_numeric') : [];
+        $classRoom->teachers()->sync($teachers);
 
-            if (array_key_exists('students', $data)) {
-                $students = $data['students'] ?? [];
-                $students = array_filter($students, 'is_numeric');
-                $classRoom->students()->sync($students);
-            }
-        }
-        return $classRoom;
+        $students = isset($data['teachers']) && is_array($data['students']) ? array_filter($data['students'], 'is_numeric') : [];
+        $classRoom->students()->sync($students);
     }
+    return $classRoom;
+}
 }

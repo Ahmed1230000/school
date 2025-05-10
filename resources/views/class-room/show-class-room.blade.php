@@ -1,4 +1,3 @@
-{{-- resources/views/classrooms/show.blade.php --}}
 @extends('layouts.app')
 
 @section('content')
@@ -26,7 +25,7 @@
                 </div>
             </div>
 
-            <!-- Classroom Details -->
+            <!-- Classroom, Teachers, and Students Details -->
             <div class="px-6 py-8 sm:px-8">
                 <div class="space-y-6">
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -39,25 +38,89 @@
                         <!-- Code -->
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Code</label>
-                            <p class="mt-1 text-gray-900">{{ $classRoom->code }}</p>
+                            <p class="mt-1 text-gray-900">{{ $classRoom->code ?? 'N/A' }}</p>
                         </div>
 
                         <!-- Capacity -->
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Capacity</label>
-                            <p class="mt-1 text-gray-900">{{ $classRoom->capacity }}</p>
+                            <p class="mt-1 text-gray-900">{{ $classRoom->capacity ?? 'N/A' }}</p>
                         </div>
 
-                        <!-- Teacher (if any relation exists) -->
+                        <!-- Floor -->
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">Teacher</label>
-                            <p class="mt-1 text-gray-900">
-                                @forelse ($classRoom->teachers as $teacher)
-                                {{ $teacher->full_name }}{{ !$loop->last ? ',' : '' }}
-                                @empty
-                                Not Assigned
-                                @endforelse
-                            </p>
+                            <label class="block text-sm font-medium text-gray-700">Floor</label>
+                            <p class="mt-1 text-gray-900">{{ $classRoom->floor ?? 'N/A' }}</p>
+                        </div>
+
+                        <!-- Building -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Building</label>
+                            <p class="mt-1 text-gray-900">{{ $classRoom->building ?? 'N/A' }}</p>
+                        </div>
+
+                        <!-- Type -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Type</label>
+                            <p class="mt-1 text-gray-900">{{ $classRoom->type ?? 'N/A' }}</p>
+                        </div>
+
+                        <!-- Teacher Information -->
+                        <div class="col-span-2">
+                            <h3 class="text-xl font-semibold text-gray-800 mt-4">Teacher Information</h3>
+                            @if ($classRoom->teachers->isEmpty())
+                            <p class="mt-4 text-gray-600">No teachers assigned to this classroom.</p>
+                            @else
+                            <div class="mt-4 overflow-x-auto">
+                                <table class="min-w-full divide-y divide-gray-200">
+                                    <thead class="bg-gray-50">
+                                        <tr>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Teacher Name</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subject</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phone</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="bg-white divide-y divide-gray-200">
+                                        @foreach ($classRoom->teachers as $teacher)
+                                        <tr>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $teacher->full_name }}</td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $teacher->subject ?? 'N/A' }}</td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $teacher->phone ?? 'N/A' }}</td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                            @endif
+                        </div>
+
+                        <!-- Student Information -->
+                        <div class="col-span-2">
+                            <h3 class="text-xl font-semibold text-gray-800 mt-4">Student Information</h3>
+                            @if ($classRoom->students->isEmpty())
+                            <p class="mt-4 text-gray-600">No students assigned to this classroom.</p>
+                            @else
+                            <div class="mt-4 overflow-x-auto">
+                                <table class="min-w-full divide-y divide-gray-200">
+                                    <thead class="bg-gray-50">
+                                        <tr>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student Name</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Grade</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phone</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="bg-white divide-y divide-gray-200">
+                                        @foreach ($classRoom->students as $student)
+                                        <tr>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $student->full_name }}</td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $student->grade ?? 'N/A' }}</td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $student->phone ?? 'N/A' }}</td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -66,9 +129,9 @@
                 <div class="flex justify-end mt-8 space-x-3">
                     <a href="{{ route('classrooms.edit', $classRoom->id) }}" class="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
                         <svg class="h-5 w-5 mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15.828a2 2 0 01-2.828 0l-4.586-4.586a2 2 0 112.828-2.828l4.586 4.586z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                         </svg>
-                        Edit Rlassroom
+                        Edit Classroom
                     </a>
                     <form action="{{ route('classrooms.destroy', $classRoom->id) }}" method="POST" class="inline-flex">
                         @csrf

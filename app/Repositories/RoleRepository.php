@@ -2,14 +2,19 @@
 
 namespace App\Repositories;
 
+use App\Contracts\QueryableRepositoryInterface;
+use App\Contracts\RepositoryInterface;
+use App\Helpers\QueryableTrait;
 use App\Models\User;
 use App\Repositories\BaseRepository;
 use Exception;
 use Illuminate\Support\Facades\Log;
 use Spatie\Permission\Models\Role;
 
-class RoleRepository extends BaseRepository
+class RoleRepository extends BaseRepository implements RepositoryInterface, QueryableRepositoryInterface
 {
+    use QueryableTrait;
+
     public function __construct(Role $role)
     {
         parent::__construct($role);

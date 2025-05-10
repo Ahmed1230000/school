@@ -43,7 +43,7 @@
                 <tbody class="bg-white divide-y divide-gray-200">
                     @forelse ($classRooms as $classRoom)
                     <tr class="hover:bg-gray-50 transition-colors">
-                        <td class="px-6 py-4 text-sm text-gray-500">{{ $loop->iteration }}</td>
+                        <td class="px-6 py-4 text-sm text-gray-500">{{ ($classRooms->currentPage() - 1) * $classRooms->perPage() + $loop->iteration }}</td>
                         <td class="px-6 py-4 text-sm text-gray-900">{{ $classRoom->name }}</td>
                         <td class="px-6 py-4 text-sm text-gray-500">{{ $classRoom->code }}</td>
                         <td class="px-6 py-4 text-sm text-gray-500">{{ $classRoom->capacity }}</td>
@@ -81,6 +81,9 @@
                     @endforelse
                 </tbody>
             </table>
+        </div>
+        <div class="mt-6 px-6 ">
+            {{ $classRooms->links() }}
         </div>
     </div>
 </div>

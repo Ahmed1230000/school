@@ -121,16 +121,17 @@
                         <!-- Teachers Selection (Checkboxes) -->
                         <div class="sm:col-span-2">
                             <label for="teachers" class="block text-sm font-medium text-gray-700 mb-1">Assign Teachers</label>
-                            <input type="hidden" name="teachers[]" value="">
                             <div class="space-y-2 max-h-40 overflow-y-auto p-2 border border-gray-300 rounded-md">
-                                @foreach ($teachers as $teacher)
+                                @forelse ($teachers as $teacher)
                                 <div class="flex items-center">
                                     <input type="checkbox" name="teachers[]" value="{{ $teacher->id }}" id="teacher_{{ $teacher->id }}"
                                         {{ in_array($teacher->id, old('teachers', $classRoom->teachers->pluck('id')->toArray())) ? 'checked' : '' }}
                                         class="w-4 h-4 text-purple-600 border-gray-300 rounded focus:ring-2 focus:ring-purple-300" />
                                     <label for="teacher_{{ $teacher->id }}" class="ml-2 text-sm text-gray-700">{{ $teacher->full_name }}</label>
                                 </div>
-                                @endforeach
+                                @empty
+                                <p class="text-sm text-gray-500">No teachers available.</p>
+                                @endforelse
                             </div>
                             @error('teachers')
                             <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
@@ -140,16 +141,17 @@
                         <!-- Students Selection (Checkboxes) -->
                         <div class="sm:col-span-2">
                             <label class="block text-sm font-medium text-gray-700 mb-1">Assign Students</label>
-                            <input type="hidden" name="students[]" value="">
                             <div class="space-y-2 max-h-40 overflow-y-auto p-2 border border-gray-300 rounded-md">
-                                @foreach ($students as $student)
+                                @forelse ($students as $student)
                                 <div class="flex items-center">
                                     <input type="checkbox" name="students[]" value="{{ $student->id }}" id="student_{{ $student->id }}"
                                         {{ in_array($student->id, old('students', $classRoom->students->pluck('id')->toArray())) ? 'checked' : '' }}
                                         class="w-4 h-4 text-purple-600 border-gray-300 rounded focus:ring-2 focus:ring-purple-300" />
                                     <label for="student_{{ $student->id }}" class="ml-2 text-sm text-gray-700">{{ $student->full_name }}</label>
                                 </div>
-                                @endforeach
+                                @empty
+                                <p class="text-sm text-gray-500">No students available.</p>
+                                @endforelse
                             </div>
                             @error('students')
                             <p class="text-sm text-red-600 mt-1">{{ $message }}</p>

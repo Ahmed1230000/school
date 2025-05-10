@@ -55,7 +55,7 @@ class PermissionService
     {
         try {
             // Retrieve all permissions using the permission repository
-            return $this->permissionRepository->all();
+            return $this->permissionRepository->paginate();
         } catch (\Exception $e) {
             // Log the error message and context
             $this->logError->logError($e->getMessage(), ['context' => $e]);

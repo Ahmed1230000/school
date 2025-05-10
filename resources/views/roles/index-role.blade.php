@@ -88,17 +88,17 @@
                         <tbody class="bg-white divide-y divide-gray-200">
                             @forelse($roles as $role)
                             <tr class="hover:bg-gray-50 transition duration-200">
-                            <td class="px-8 py-5 text-base text-gray-500">
-                                       <div class="flex flex-wrap gap-3">
-                                           @forelse($role->users ?? [] as $user)
-                                           <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 shadow-sm">
-                                               {{ $user->name }}
-                                           </span>
-                                           @empty
-                                           <span class="text-gray-400 text-sm">No users assigned</span>
-                                           @endforelse
-                                       </div>
-                                   </td>
+                                <td class="px-8 py-5 text-base text-gray-500">
+                                    <div class="flex flex-wrap gap-3">
+                                        @forelse($role->users ?? [] as $user)
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 shadow-sm">
+                                            {{ $user->name }}
+                                        </span>
+                                        @empty
+                                        <span class="text-gray-400 text-sm">No users assigned</span>
+                                        @endforelse
+                                    </div>
+                                </td>
                                 <td class="px-8 py-5 whitespace-nowrap text-base font-medium text-gray-900">{{ $role->id }}</td>
                                 <td class="px-8 py-5 whitespace-nowrap text-base font-semibold text-gray-900">{{ $role->name }}</td>
                                 <td class="px-8 py-5 text-base text-gray-500">
@@ -157,6 +157,9 @@
                 </a>
             </div>
         </div>
+    </div>
+    <div class="mt-6 px-6">
+        {{ $roles->links() }}
     </div>
 </div>
 

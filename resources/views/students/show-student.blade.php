@@ -25,7 +25,7 @@
                 </div>
             </div>
 
-            <!-- Student Details -->
+            <!-- Student, Teacher, and Classroom Details -->
             <div class="px-6 py-8 sm:px-8">
                 <div class="space-y-6">
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -33,6 +33,66 @@
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Full Name</label>
                             <p class="mt-1 text-gray-900">{{ $student->full_name }}</p>
+                        </div>
+
+                        <!-- Teacher Information -->
+                        <div class="col-span-2">
+                            <h3 class="text-xl font-semibold text-gray-800 mt-4">Teacher Information</h3>
+                            @if ($student->teachers->isEmpty())
+                            <p class="mt-4 text-gray-600">No teachers assigned to this student.</p>
+                            @else
+                            <div class="mt-4 overflow-x-auto">
+                                <table class="min-w-full divide-y divide-gray-200">
+                                    <thead class="bg-gray-50">
+                                        <tr>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Teacher Name</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subject</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phone</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="bg-white divide-y divide-gray-200">
+                                        @foreach ($student->teachers as $teacher)
+                                        <tr>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $teacher->full_name }}</td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $teacher->subject ?? 'N/A' }}</td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $teacher->phone ?? 'N/A' }}</td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                            @endif
+                        </div>
+
+                        <!-- Classroom Information -->
+                        <div class="col-span-2">
+                            <h3 class="text-xl font-semibold text-gray-800 mt-4">Classroom Information</h3>
+                            @if ($student->classrooms->isEmpty())
+                            <p class="mt-4 text-gray-600">No classrooms assigned to this student.</p>
+                            @else
+                            <div class="mt-4 overflow-x-auto">
+                                <table class="min-w-full divide-y divide-gray-200">
+                                    <thead class="bg-gray-50">
+                                        <tr>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Classroom Name</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Floor</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Code</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="bg-white divide-y divide-gray-200">
+                                        @foreach ($student->classrooms as $classroom)
+                                        <tr>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $classroom->name }}</td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $classroom->floor ?? 'N/A' }}</td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $classroom->code ?? 'N/A' }}</td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $classroom->type ?? 'N/A' }}</td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                            @endif
                         </div>
 
                         <!-- Date of Birth -->

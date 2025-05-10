@@ -41,7 +41,7 @@
                 <tbody class="bg-white divide-y divide-gray-200">
                     @forelse ($teachers as $teacher)
                     <tr class="hover:bg-gray-50 transition-colors">
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $loop->iteration }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ ($teachers->currentPage() - 1) * $teachers->perPage() + $loop->iteration }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="flex items-center">
                                 <div class="flex-shrink-0 h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-medium">
@@ -109,6 +109,9 @@
                     @endforelse
                 </tbody>
             </table>
+            <div class="mt-6 px-6 z-10">
+                {{ $teachers->links() }}
+            </div>
         </div>
     </div>
 </div>

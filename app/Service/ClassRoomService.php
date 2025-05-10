@@ -26,7 +26,7 @@ class ClassRoomService
     public function getAll()
     {
         try {
-            return $this->classRoomRepository->all();
+            return $this->classRoomRepository->paginate();
         } catch (\Exception $e) {
             $this->logError->logError($e->getMessage(), ['context' => $e]);
             $this->message->flashMessage('error', 'Failed to fetch students!');
@@ -37,7 +37,12 @@ class ClassRoomService
     public function getById($id)
     {
         try {
-            return $this->classRoomRepository->find($id);
+            return $this->classRoomRepository->find(
+                $id,
+                'teachers:id,full_name,subject,phone',
+                'students:id,full_name,grade,phone'
+
+            );
         } catch (\Exception $e) {
             $this->logError->logError($e->getMessage(), ['context' => $e]);
             $this->message->flashMessage('error', 'Failed to fetch student!');

@@ -12,7 +12,7 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
-    <!-- Google Fonts (Roboto for professional look) -->
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 
     <!-- Alpine.js -->
@@ -62,6 +62,16 @@
 
         main {
             flex: 1;
+            position: static;
+            z-index: 0;
+        }
+
+        /* Reset z-index for all content containers */
+        .max-w-7xl,
+        .bg-white.shadow,
+        [role="navigation"] {
+            position: static !important;
+            z-index: 0 !important;
         }
     </style>
 </head>
@@ -76,21 +86,20 @@
                 <li><a href="{{ url('/students') }}" class="text-gray-700 hover:text-blue-600 nav-link">Students</a></li>
                 <li><a href="{{ url('/teachers') }}" class="text-gray-700 hover:text-blue-600 nav-link">Teachers</a></li>
                 <li><a href="{{ url('/classrooms') }}" class="text-gray-700 hover:text-blue-600 nav-link">Classroom</a></li>
-                <!-- User Dropdown -->
-                <li x-data="{ userMenuOpen: false }" class="relative">
-                    <button @click="userMenuOpen = !userMenuOpen" class="w-9 h-9 rounded-full bg-gray-200 flex items-center justify-center text-gray-700 font-bold hover:bg-gray-300 transition">
-                        {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
-                    </button>
-                    <div x-show="userMenuOpen" @click.away="userMenuOpen = false" x-transition
-                        class="absolute right-0 mt-2 w-40 bg-white shadow-lg rounded border text-sm z-50">
-                        <div class="px-4 py-2 border-b text-gray-700">{{ Auth::user()->name }}</div>
-                        <form method="POST" action="{{ route('logout.perform') }}">
-                            @csrf
-                            <button type="submit" class="w-full text-left px-4 py-2 hover:bg-red-50 text-red-600">Logout</button>
-                        </form>
-                    </div>
-                </li>
-                <!-- Settings -->
+                <div x-show="userMenuOpen" @click.away="userMenuOpen = false" x-transition
+                    class="absolute right-0 mt-2 w-40 bg-white shadow-lg rounded border text-sm z-50">
+                    @if(Auth::check())
+                    <div class="px-4 py-2 border-b text-gray-700">{{ Auth::user()->name }}</div>
+                    <form method="POST" action="{{ route('logout.perform') }}">
+                        @csrf
+                        <button type="submit" class="w-full text-left px-4 py-2 hover:bg-red-50 text-red-600">Logout</button>
+                    </form>
+                    @else
+                    <div class="px-4 py-2 border-b text-gray-700">Guest</div>
+                    <a href="{{ route('login') }}" class="block px-4 py-2 hover:bg-gray-100 text-blue-600">Login</a>
+                    @endif
+                </div>
+
                 <li>
                     <button @click="sidebarOpen = true" class="text-gray-700 hover:text-blue-600 nav-link focus:outline-none flex items-center">
                         <i class="fas fa-cog mr-1"></i> Settings
@@ -120,11 +129,11 @@
         x-transition:leave="transition ease-in duration-200"
         x-transition:leave-start="translate-x-0"
         x-transition:leave-end="translate-x-full"
-        class="fixed inset-0 z-50 flex justify-end">
-        <!-- Overlay -->
-        <div class="fixed inset-0 bg-black bg-opacity-50" @click="sidebarOpen = false"></div>
-        <!-- Sidebar -->
-        <aside class="relative bg-white w-80 max-w-full h-full shadow-xl z-50 p-6 overflow-y-auto">
+        class="fixed inset-0 z-[1000] flex justify-end">
+
+        <div class="absolute inset-0 bg-black bg-opacity-50 z-[999]" @click="sidebarOpen = false"></div>
+
+        <aside class="relative bg-white w-80 max-w-full h-full shadow-xl z-[1001] p-6 overflow-y-auto">
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-lg font-semibold text-gray-700">System Settings</h2>
                 <button @click="sidebarOpen = false" class="text-gray-500 hover:text-red-600 focus:outline-none">

@@ -158,6 +158,9 @@
             </div>
         </div>
     </div>
+    <div class="mt-6 px-6 ">
+        {{ $permissions->links() }}
+    </div>
 </div>
 
 @section('scripts')

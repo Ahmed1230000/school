@@ -2,6 +2,9 @@
 
 namespace App\Repositories;
 
+use App\Contracts\QueryableRepositoryInterface;
+use App\Contracts\RepositoryInterface;
+use App\Helpers\QueryableTrait;
 use App\Models\User;
 use Illuminate\Support\Facades\Log;
 use Spatie\Permission\Models\Permission;  // Importing the Permission model to work with
@@ -9,8 +12,9 @@ use Spatie\Permission\Models\Permission;  // Importing the Permission model to w
  * PermissionRepository handles the data access logic for the Permission model.
  * It extends the BaseRepository to utilize common CRUD operations.
  */
-class PermissionRepository extends BaseRepository
+class PermissionRepository extends BaseRepository implements RepositoryInterface, QueryableRepositoryInterface
 {
+    use QueryableTrait;
     /**
      * @var Permission
      * The permission model instance.

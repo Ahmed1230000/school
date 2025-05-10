@@ -2,12 +2,16 @@
 
 namespace App\Repositories;
 
+use App\Contracts\QueryableRepositoryInterface;
+use App\Contracts\RepositoryInterface;
 use App\Enum\StatusType;
+use App\Helpers\QueryableTrait;
 use App\Models\Teacher;
 use Illuminate\Support\Facades\Log;
 
-class TeacherRepository extends BaseRepository
+class TeacherRepository extends BaseRepository implements RepositoryInterface, QueryableRepositoryInterface
 {
+    use QueryableTrait;
     public function __construct(Teacher $teacher)
     {
         parent::__construct($teacher);

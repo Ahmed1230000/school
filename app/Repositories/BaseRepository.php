@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Contracts\RepositoryInterface;  // Importing the repository interface for defining the contract
 use Illuminate\Database\Eloquent\Model; // Importing the Eloquent Model class to work with database records
+use Spatie\QueryBuilder\QueryBuilder;
 
 abstract class BaseRepository implements RepositoryInterface
 {
@@ -44,9 +45,9 @@ abstract class BaseRepository implements RepositoryInterface
      * @return \Illuminate\Database\Eloquent\Model
      * Returns the found model instance, or throws a `ModelNotFoundException` if not found.
      */
-    public function find($id)
+    public function find($id, ...$relations)
     {
-        return $this->model->findOrFail($id); // This will throw an exception if not found.
+        return $this->model->with($relations)->findOrFail($id); // This will throw an exception if not found.
     }
 
     /**
@@ -102,5 +103,10 @@ abstract class BaseRepository implements RepositoryInterface
 
         // Delete the record
         return $model->delete(); // This will delete the model from the database.
+    }
+
+    protected function query(): QueryBuilder
+    {
+        return QueryBuilder::for($this->model);
     }
 }

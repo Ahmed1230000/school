@@ -1,4 +1,3 @@
-{{-- resources/views/students/edit.blade.php --}}
 @extends('layouts.app')
 
 @section('content')
@@ -152,4 +151,4 @@
         background-size: 1.5rem;
     }
 </style>
-@endsections
+@endsection

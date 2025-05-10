@@ -27,7 +27,7 @@ class TeacherService
     public function getALl()
     {
         try {
-            return $this->teacherRepository->all();
+            return $this->teacherRepository->paginate();
         } catch (\Exception $e) {
             $this->logError->logError($e->getMessage(), ['context' => $e]);
             $this->message->flashMessage('error', 'Failed to fetch teachers!');
@@ -38,7 +38,11 @@ class TeacherService
     public function getById($id)
     {
         try {
-            return $this->teacherRepository->find($id);
+            return $this->teacherRepository->find(
+                $id,
+                'students:full_name,grade,phone',
+                'classrooms:name,code,floor,type'
+            );
         } catch (\Exception $e) {
             $this->logError->logError($e->getMessage(), ['context' => $e]);
             $this->message->flashMessage('error', 'Failed to fetch teacher!');
