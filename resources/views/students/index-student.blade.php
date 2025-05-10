@@ -23,7 +23,7 @@
         </a>
     </div>
 
-    <!-- Student Table -->
+    {{-- Student Table --}}
     <div class="bg-white shadow overflow-hidden sm:rounded-lg">
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200">
@@ -41,7 +41,7 @@
                 <tbody class="bg-white divide-y divide-gray-200">
                     @forelse ($students as $index => $student)
                     <tr class="hover:bg-gray-50 transition-colors">
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $loop->iteration }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ ($students->currentPage() - 1) * $students->perPage() + $loop->iteration }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="flex items-center">
                                 <div class="flex-shrink-0 h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-medium">
@@ -108,6 +108,12 @@
                 </tbody>
             </table>
         </div>
+
+        <!-- Pagination Links -->
+        <div class="px-6 py-4">
+            {{ $students->links() }}
+        </div>
     </div>
+
 </div>
 @endsection

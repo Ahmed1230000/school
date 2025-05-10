@@ -2,10 +2,15 @@
 
 namespace App\Repositories;
 
+use App\Contracts\QueryableRepositoryInterface;
+use App\Contracts\RepositoryInterface;
+use App\Helpers\QueryableTrait;
 use App\Models\User;
 
-class UserRepository extends BaseRepository
+class UserRepository extends BaseRepository implements RepositoryInterface, QueryableRepositoryInterface
 {
+    use QueryableTrait;
+
     /**
      * The model instance.
      *
@@ -21,6 +26,6 @@ class UserRepository extends BaseRepository
      */
     public function __construct(User $model)
     {
-        $this->model = $model;
+        parent::__construct($model);
     }
 }

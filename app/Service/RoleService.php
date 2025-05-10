@@ -52,7 +52,7 @@ class RoleService
     public function getAll()
     {
         try {
-            return $this->roleRepository->all();  // Calling the all() method from RoleRepository
+            return $this->roleRepository->paginate();  // Calling the all() method from RoleRepository
         } catch (\Exception $e) {
             // If an error occurs, log it and flash an error message
             $this->logError->logError($e->getMessage(), ['context' => $e]);

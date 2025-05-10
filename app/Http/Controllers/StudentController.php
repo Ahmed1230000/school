@@ -6,16 +6,21 @@ use App\Helpers\LogError;
 use App\Http\Requests\StudentStoreFormRequest;
 use App\Http\Requests\StudentUpdateFormRequest;
 use App\Service\StudentService;
-use Illuminate\Http\Request;
+use App\Service\TeacherService;
 
 class StudentController extends Controller
 {
     use LogError;
 
+    protected $teacherService;
+
     protected $studentService;
-    public function __construct(StudentService $studentService)
-    {
+    public function __construct(
+        StudentService $studentService,
+        TeacherService $teacherService
+    ) {
         $this->studentService = $studentService;
+        $this->teacherService = $teacherService;
     }
     /**
      * Display a listing of the resource.
@@ -24,7 +29,8 @@ class StudentController extends Controller
     {
         try {
             $students = $this->studentService->getAll();
-            return view('students.index-student', compact('students'));
+            $teacher = $this->teacherService->getALl();
+            return view('students.index-student', compact('students', 'teacher'));
         } catch (\Exception $e) {
             // Log the error message and context
             $this->logError($e->getMessage(), ['context' => $e]);
@@ -62,6 +68,7 @@ class StudentController extends Controller
      */
     public function show(string $id)
     {
+
         try {
             $student = $this->studentService->getById($id);
             return view('students.show-student', compact('student'));

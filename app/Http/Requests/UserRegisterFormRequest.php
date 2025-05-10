@@ -28,7 +28,6 @@ class UserRegisterFormRequest extends FormRequest
             'name'      => ['required', 'string', 'max:255'],
             'email'     => ['required', 'string', 'email', 'max:255', Rule::unique('users', 'email')],
             'password'  => ['required', 'string', 'min:4', 'max:8', 'confirmed'],
-            'user_type' => ['required', 'string', Rule::enum(UserType::class)],
         ];
     }
     /**
@@ -60,10 +59,6 @@ class UserRegisterFormRequest extends FormRequest
             'password.min'                   => 'Password must be at least 4 characters.',
             'password.max'                   => 'Password must not exceed 8 characters.',
             'password.confirmed'             => 'Password confirmation does not match.',
-
-            'user_type.required'             => 'User type is required.',
-            'user_type.string'               => 'User type must be a string.',
-            'user_type.enum'                 => 'Invalid user type selected' . 'student or teacher',
 
             'phone.string'                   => 'Phone must be a string.',
             'phone.max'                      => 'Phone must not exceed 11 characters.',
