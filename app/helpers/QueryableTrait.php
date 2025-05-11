@@ -32,7 +32,7 @@ trait QueryableTrait
         return $builder;
     }
 
-    public function paginate($paginatePerBage = 1)
+    public function paginate($paginatePerBage = 9)
     {
         return $this->query()->paginate($paginatePerBage);
     }
