@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NewStudentEvent;
 use App\Helpers\LogError;
 use App\Http\Requests\StudentStoreFormRequest;
 use App\Http\Requests\StudentUpdateFormRequest;
@@ -53,7 +54,8 @@ class StudentController extends Controller
     public function store(StudentStoreFormRequest $request)
     {
         try {
-            $this->studentService->create($request->validated());
+            $student = $this->studentService->create($request->validated());
+            // event(new NewStudentEvent($student));
             return redirect()->route('students.index');
         } catch (\Exception $e) {
             // Log the error message and context

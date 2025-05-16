@@ -24,17 +24,17 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
             <div class="bg-gray-50 p-5 rounded border">
                 <h3 class="text-gray-700 font-semibold mb-2">Total Students</h3>
-                <p class="text-3xl text-blue-600 font-bold">350</p>
+                <p class="text-3xl text-blue-600 font-bold">{{ \App\Models\Student::count() }}</p>
             </div>
 
             <div class="bg-gray-50 p-5 rounded border">
                 <h3 class="text-gray-700 font-semibold mb-2">Total Teachers</h3>
-                <p class="text-3xl text-green-600 font-bold">25</p>
+                <p class="text-3xl text-green-600 font-bold">{{ \App\Models\Teacher::count() }}</p>
             </div>
 
             <div class="bg-gray-50 p-5 rounded border">
                 <h3 class="text-gray-700 font-semibold mb-2">Total Classes</h3>
-                <p class="text-3xl text-purple-600 font-bold">12</p>
+                <p class="text-3xl text-purple-600 font-bold">{{ \App\Models\ClassRoom::count() }}</p>
             </div>
         </div>
 

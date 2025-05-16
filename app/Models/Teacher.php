@@ -46,4 +46,9 @@ class Teacher extends Model
     {
         return $this->belongsToMany(ClassRoom::class, 'classroom_teacher', 'teacher_id', 'classroom_id')->withTimestamps();
     }
+
+    public function materials()
+    {
+        return $this->hasMany(Material::class);
+    }
 }

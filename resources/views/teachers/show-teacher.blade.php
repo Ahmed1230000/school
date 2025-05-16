@@ -154,6 +154,35 @@
               </div>
               @endif
             </div>
+            <!-- Materials Information -->
+            <div class="col-span-2">
+              <h3 class="text-xl font-semibold text-gray-800 mt-4">Materials</h3>
+              @if ($teacher->materials->isEmpty())
+              <p class="mt-4 text-gray-600">No materials created by this teacher.</p>
+              @else
+              <div class="mt-4 overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                  <thead class="bg-gray-50">
+                    <tr>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created At</th>
+                    </tr>
+                  </thead>
+                  <tbody class="bg-white divide-y divide-gray-200">
+                    @foreach ($teacher->materials as $material)
+                    <tr>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $material->name }}</td>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $material->description ?? 'N/A' }}</td>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ \Carbon\Carbon::parse($material->created_at)->format('d/m/Y') }}</td>
+                    </tr>
+                    @endforeach
+                  </tbody>
+                </table>
+              </div>
+              @endif
+            </div>
+
           </div>
         </div>
 

@@ -7,6 +7,7 @@ use App\Http\Requests\TeacherStoreFormRequest;
 use App\Http\Requests\TeacherUpdateFormRequest;
 use App\Service\StudentService;
 use App\Service\TeacherService;
+use Illuminate\Support\Facades\Log;
 
 class TeacherController extends Controller
 {

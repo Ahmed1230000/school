@@ -14,7 +14,17 @@ class StudentRepository extends BaseRepository implements RepositoryInterface, Q
 {
     use QueryableTrait;
 
-    protected $allowedFilters = [];
+    protected $allowedFilters = [
+        // 'full_name',
+        // 'date_of_birth',
+        // 'gender',
+        // 'grade',
+        // 'enrollment_date',
+        // 'address',
+        // 'phone',
+        // 'guardian_name',
+        // 'guardian_phone',
+    ];
 
     protected $allowedSorts = [];
 

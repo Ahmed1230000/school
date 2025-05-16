@@ -52,6 +52,7 @@ class StudentService
     {
         try {
             return $this->studentRepository->create($data);
+            
         } catch (\Exception $e) {
             $this->logError->logError($e->getMessage(), ['context' => $e]);
             $this->message->flashMessage('error', 'Failed to create student!');

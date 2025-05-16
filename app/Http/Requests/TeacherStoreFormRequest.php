@@ -41,6 +41,9 @@ class TeacherStoreFormRequest extends FormRequest
                 'integer',
                 Rule::exists('students', 'id')->whereNull('deleted_at')
             ],
+            'materials'               => ['nullable', 'array'],
+            'materials.*.name'        => ['string', Rule::unique('materials', 'name')],
+            'materials.*.description' => ['nullable', 'string', 'max:255'],
         ];
     }
     public function messages(): array
@@ -51,6 +54,7 @@ class TeacherStoreFormRequest extends FormRequest
             'hire_date.before_or_equal' => 'The hire date must be today or earlier.',
             'phone.regex' => 'The phone format is invalid.',
             'emergency_contact_phone.regex' => 'The emergency contact phone format is invalid.',
+            'materials.*.name.string' => 'materials name field must be a string.'
         ];
     }
 

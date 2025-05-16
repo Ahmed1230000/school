@@ -78,22 +78,22 @@
               @enderror
             </div>
 
-            <!-- Phone -->
-            <div>
-              <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
-              <input type="tel" name="phone" id="phone" value="{{ old('phone', $teacher->phone) }}"
-                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300" />
-              @error('phone')
-              <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
-              @enderror
-            </div>
-
             <!-- Subject -->
             <div>
               <label for="subject" class="block text-sm font-medium text-gray-700 mb-1">Subject</label>
               <input type="text" name="subject" id="subject" value="{{ old('subject', $teacher->subject) }}"
                 class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300" />
               @error('subject')
+              <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+              @enderror
+            </div>
+
+            <!-- Phone -->
+            <div>
+              <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+              <input type="tel" name="phone" id="phone" value="{{ old('phone', $teacher->phone) }}"
+                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300" />
+              @error('phone')
               <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
               @enderror
             </div>
@@ -158,6 +158,62 @@
               @enderror
             </div>
 
+            <!-- Materials Section -->
+            <div class="sm:col-span-2">
+              <label class="block text-sm font-medium text-gray-700 mb-1">Materials</label>
+              <div id="materials-container" class="space-y-4 p-4 border border-gray-300 rounded-md bg-white">
+                <!-- Material Template -->
+                <div class="material-item hidden" id="material-template">
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-1">Material Name *</label>
+                      <input type="text" name="materials[][name]" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300" />
+                    </div>
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                      <input type="text" name="materials[][description]" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300" />
+                    </div>
+                    <input type="hidden" name="materials[][id]" value="" />
+                  </div>
+                  <button type="button" class="remove-material mt-2 text-sm text-red-600 hover:text-red-800 hidden">Remove Material</button>
+                </div>
+                <!-- Existing Materials -->
+                @foreach ($teacher->materials as $index => $material)
+                <div class="material-item">
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-1">Material Name *</label>
+                      <input type="text" name="materials[{{ $index }}][name]" value="{{ old('materials.' . $index . '.name', $material->name) }}" required
+                        class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300" />
+                      @error('materials.' . $index . '.name')
+                      <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                      @enderror
+                    </div>
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                      <input type="text" name="materials[{{ $index }}][description]" value="{{ old('materials.' . $index . '.description', $material->description) }}"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300" />
+                      @error('materials.' . $index . '.description')
+                      <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                      @enderror
+                    </div>
+                    <input type="hidden" name="materials[{{ $index }}][id]" value="{{ $material->id }}" />
+                  </div>
+                  <button type="button" class="remove-material mt-2 text-sm text-red-600 hover:text-red-800">Remove Material</button>
+                </div>
+                @endforeach
+              </div>
+              <button type="button" id="add-material" class="mt-2 inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700">
+                <svg class="h-5 w-5 mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+                Add Material
+              </button>
+              @error('materials')
+              <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+              @enderror
+            </div>
+
             <!-- Students -->
             <div class="sm:col-span-2">
               <label class="block text-sm font-medium text-gray-700 mb-1">Assign Students</label>
@@ -179,7 +235,6 @@
               <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
               @enderror
             </div>
-
           </div>
 
           <!-- Buttons -->
@@ -215,4 +270,93 @@
     max-height: 10rem;
   }
 </style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const addButton = document.getElementById('add-material');
+    const container = document.getElementById('materials-container');
+    const template = document.getElementById('material-template');
+    const form = document.querySelector('form');
+
+    if (!addButton || !container || !template || !form) {
+      console.error('Missing elements:', {
+        addButton: !!addButton,
+        container: !!container,
+        template: !!template,
+        form: !!form
+      });
+      return;
+    }
+
+    function updateMaterialIndices() {
+      const items = container.querySelectorAll('.material-item:not(.hidden)');
+      items.forEach((item, index) => {
+        const inputs = item.querySelectorAll('input');
+        inputs.forEach(input => {
+          const name = input.getAttribute('name');
+          if (name) {
+            input.setAttribute('name', name.replace(/materials\[\d+\]/, `materials[${index}]`));
+          }
+        });
+      });
+    }
+
+    addButton.addEventListener('click', function() {
+      const clone = template.cloneNode(true);
+      clone.classList.remove('hidden');
+      clone.querySelector('.remove-material').classList.remove('hidden');
+
+      const inputs = clone.querySelectorAll('input');
+      const index = container.querySelectorAll('.material-item:not(.hidden)').length;
+      inputs.forEach(input => {
+        if (input.type !== 'hidden') {
+          input.value = '';
+        }
+        const name = input.getAttribute('name').replace('materials[]', `materials[${index}]`);
+        input.setAttribute('name', name);
+        if (input.name.includes('[name]')) {
+          input.setAttribute('required', 'required');
+        }
+      });
+
+      container.appendChild(clone);
+      updateMaterialIndices();
+      console.log('Added new material, total materials:', container.querySelectorAll('.material-item:not(.hidden)').length);
+    });
+
+    container.addEventListener('click', function(e) {
+      if (e.target.classList.contains('remove-material')) {
+        e.target.closest('.material-item').remove();
+        updateMaterialIndices();
+        console.log('Removed material, total materials:', container.querySelectorAll('.material-item:not(.hidden)').length);
+      }
+    });
+
+    form.addEventListener('submit', function(e) {
+      const materialItems = container.querySelectorAll('.material-item:not(.hidden)');
+      console.log('Materials before cleanup:', materialItems.length);
+      materialItems.forEach((item, index) => {
+        const nameInput = item.querySelector('input[name$="[name]"]');
+        if (!nameInput.value.trim()) {
+          item.remove();
+          console.log(`Removed empty material ${index}`);
+        }
+      });
+      updateMaterialIndices();
+
+      const formData = new FormData(this);
+      const materials = [];
+      formData.forEach((value, key) => {
+        if (key.startsWith('materials')) {
+          console.log(`${key}: ${value}`);
+          materials.push({
+            key,
+            value
+          });
+        }
+      });
+      console.log('Submitted materials:', materials);
+    });
+  });
+</script>
 @endsection

@@ -88,16 +88,6 @@
                             @enderror
                         </div>
 
-                        <!-- Subject -->
-                        <div>
-                            <label for="subject" class="block text-sm font-medium text-gray-700 mb-1">Subject *</label>
-                            <input type="text" name="subject" id="subject" value="{{ old('subject') }}" required
-                                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300" />
-                            @error('subject')
-                            <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
-                            @enderror
-                        </div>
-
                         <!-- Hire Date -->
                         <div>
                             <label for="hire_date" class="block text-sm font-medium text-gray-700 mb-1">Hire Date *</label>
@@ -117,7 +107,15 @@
                             <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
                             @enderror
                         </div>
-
+                        <!-- Subject -->
+                        <div>
+                            <label for="subject" class="block text-sm font-medium text-gray-700 mb-1">Subject *</label>
+                            <input type="text" name="subject" id="subject" value="{{ old('subject') }}" required
+                                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300" />
+                            @error('subject')
+                            <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
                         <!-- Experience -->
                         <div>
                             <label for="experience" class="block text-sm font-medium text-gray-700 mb-1">Experience *</label>
@@ -154,6 +152,58 @@
                             <input type="tel" name="emergency_contact_phone" id="emergency_contact_phone" value="{{ old('emergency_contact_phone') }}" required
                                 class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300" />
                             @error('emergency_contact_phone')
+                            <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <!-- Materials Section -->
+                        <div class="sm:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Materials *</label>
+                            <div id="materials-container" class="space-y-4 p-4 border border-gray-300 rounded-md bg-white">
+                                <!-- Material Template (Hidden) -->
+                                <div class="material-item hidden" id="material-template">
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Material Name *</label>
+                                            <input type="text" name="materials[][name]" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300" />
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Material Description *</label>
+                                            <input type="text" name="materials[][description]" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300" />
+                                        </div>
+                                    </div>
+                                    <button type="button" class="remove-material mt-2 text-sm text-red-600 hover:text-red-800">Remove Material</button>
+                                </div>
+                                <!-- Initial Material Field -->
+                                <div class="material-item">
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Material Name *</label>
+                                            <input type="text" name="materials[0][name]" value="{{ old('materials.0.name') }}"
+                                                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300" required />
+                                            @error('materials.0.name')
+                                            <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                                            @enderror
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                                            <input type="text" name="materials[0][description]" value="{{ old('materials.0.description') }}"
+                                                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300" />
+                                            @error('materials.0.description')
+                                            <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <button type="button" class="remove-material mt-2 text-sm text-red-600 hover:text-red-800 hidden">Remove Material</button>
+                                </div>
+                            </div>
+                            <button type="button" id="add-material" class="mt-2 inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700">
+                                <svg class="h-5 w-5 mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                                </svg>
+                                Add Material
+                            </button>
+                            @error('materials')
                             <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
                             @enderror
                         </div>
@@ -207,8 +257,92 @@
         background-position: right 0.75rem center;
         background-size: 1.5rem;
     }
+
     .max-h-40 {
         max-height: 10rem;
     }
 </style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const addButton = document.getElementById('add-material');
+        const container = document.getElementById('materials-container');
+        const template = document.getElementById('material-template');
+
+        if (!addButton || !container || !template) {
+            console.error('Missing required elements:', {
+                addButton: !!addButton,
+                container: !!container,
+                template: !!template
+            });
+            return;
+        }
+
+        addButton.addEventListener('click', function() {
+            const materialItems = container.querySelectorAll('.material-item:not(#material-template)');
+            const index = materialItems.length;
+            const clone = template.cloneNode(true);
+
+            clone.querySelectorAll('input').forEach(input => {
+                const name = input.name.replace(/(\[\]|\[\d+\])/, `[${index}]`);
+                input.name = name;
+                input.value = '';
+                if (name.includes('[name]')) {
+                    input.setAttribute('required', 'required');
+                } else {
+                    input.removeAttribute('required');
+                }
+            });
+
+            clone.classList.remove('hidden');
+            clone.id = '';
+            container.appendChild(clone);
+
+            const removeButtons = container.querySelectorAll('.remove-material');
+            if (materialItems.length >= 1) {
+                removeButtons.forEach(btn => btn.classList.remove('hidden'));
+            }
+
+            console.log(`Added material with index ${index}`);
+        });
+
+        container.addEventListener('click', function(e) {
+            if (e.target.classList.contains('remove-material')) {
+                const item = e.target.closest('.material-item');
+                if (item) {
+                    item.remove();
+
+                    const materialItems = container.querySelectorAll('.material-item:not(#material-template)');
+                    materialItems.forEach((item, index) => {
+                        item.querySelectorAll('input').forEach(input => {
+                            const name = input.name.replace(/materials\[\d+\]/g, `materials[${index}]`);
+                            input.name = name;
+                        });
+                    });
+
+                    const removeButtons = container.querySelectorAll('.remove-material');
+                    if (materialItems.length <= 1) {
+                        removeButtons.forEach(btn => btn.classList.add('hidden'));
+                    }
+
+                    console.log(`Removed material, re-indexed to ${materialItems.length} items`);
+                }
+            }
+        });
+
+        const form = container.closest('form');
+        if (form) {
+            form.addEventListener('submit', function() {
+                const materialItems = container.querySelectorAll('.material-item:not(#material-template)');
+                materialItems.forEach(item => {
+                    const nameInput = item.querySelector('input[name$="[name]"]');
+                    if (!nameInput.value.trim()) {
+                        item.remove();
+                    }
+                });
+                console.log(`Cleaned up empty materials before submission`);
+            });
+        }
+    });
+</script>
 @endsection

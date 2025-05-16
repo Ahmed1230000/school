@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Enum\StatusType;
+use App\Rules\IgnoreExistsMaterialsName;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -28,37 +29,21 @@ class TeacherUpdateFormRequest extends FormRequest
             'date_of_birth'           => ['nullable', 'date', 'before:today'],
             'gender'                  => ['nullable', 'in:male,female'],
             'address'                 => ['nullable', 'string', 'max:255'],
-            'phone'                   => [
-                'nullable',
-                Rule::unique('teachers', 'phone')->ignore($this->teacher),
-                'max:15'
-            ],
-            'email'                   => [
-                'nullable',
-                'email',
-                'max:255',
-                Rule::unique('teachers')->ignore($this->teacher),
-            ],
+            'phone'                   => ['nullable', Rule::unique('teachers', 'phone')->ignore($this->teacher), 'max:15'],
+            'email'                   => ['nullable', 'email', 'max:255', Rule::unique('teachers')->ignore($this->teacher),],
             'subject'                 => ['nullable', 'string', 'max:255'],
             'hire_date'               => ['nullable', 'date', 'before_or_equal:today'],
             'qualification'           => ['nullable', 'string', 'max:255'],
             'experience'              => ['nullable', 'string', 'max:255'],
             'emergency_contact_name'  => ['nullable', 'string', 'max:255'],
-            'emergency_contact_phone' => [
-                'nullable',
-                Rule::unique('teachers', 'emergency_contact_phone')->ignore($this->teacher),
-                'max:15'
-            ],
-            'status'                  => [
-                'nullable',
-                Rule::enum(StatusType::class)
-            ],
+            'emergency_contact_phone' => ['nullable', Rule::unique('teachers', 'emergency_contact_phone')->ignore($this->teacher), 'max:15'],
+            'status'                  => ['nullable', Rule::enum(StatusType::class)],
             'students'                => ['nullable', 'array'],
-            'students.*'              => [
-                'nullable',
-                'integer',
-                Rule::exists('students', 'id')->whereNull('deleted_at')
-            ],
+            'students.*'              => ['nullable', 'integer', Rule::exists('students', 'id')->whereNull('deleted_at')],
+            'materials'               => ['nullable', 'array'],
+            'materials.*.id'          => ['nullable', Rule::exists('materials', 'id')->whereNull('deleted_at')],
+            'materials.*.description' => ['nullable', 'string', 'max:255'],
+            'materials.*.name'        => ['string', new IgnoreExistsMaterialsName()]
         ];
     }
     public function messages(): array

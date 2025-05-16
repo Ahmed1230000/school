@@ -2,13 +2,17 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Auth;
 
 class Student extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes,Notifiable;
     protected $table = 'students';
     protected $fillable = [
         'full_name',
@@ -44,4 +48,13 @@ class Student extends Model
     {
         return $this->belongsToMany(ClassRoom::class, 'classroom_student', 'student_id', 'classroom_id')->withTimestamps();
     }
+    // protected static function boot()
+    // {
+    //     parent::boot();
+    //     static::addGlobalScope('GetUser', function ($query) {
+    //         if (Auth::check()) {
+    //             $query->where('user_id', Auth::id());
+    //         }
+    //     });
+    // }
 }
